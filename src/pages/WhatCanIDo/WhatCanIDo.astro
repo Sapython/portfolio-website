@@ -1,0 +1,62 @@
+---
+import ExperienceCard from "./ExperienceCard.astro";
+let webDevIcons = [
+    'devicon-typescript-plain',
+    'devicon-angularjs-plain',
+    'devicon-react-original',
+    'devicon-ionic-original',
+    'devicon-firebase-plain',
+    'devicon-sass-original',
+    'devicon-tailwindcss-plain',
+];
+
+let appDevIcons = [
+'devicon-typescript-plain',
+    'devicon-angularjs-plain',
+    'devicon-react-original',
+    'devicon-ionic-original',
+    'devicon-firebase-plain',
+    'devicon-androidstudio-plain',
+    'devicon-java-plain',
+    'devicon-kotlin-plain'
+]
+
+let serverIcons = [
+    'devicon-python-plain',
+    'go-original-wordmark',
+    'devicon-typescript-plain',
+    'devicon-graphql-plain',
+    'devicon-googlecloud-plain',
+    'devicon-docker-plain'
+]
+
+let devOpsIcons = [
+    'devicon-docker-plain',
+    'devicon-jenkins-plain',
+    'devicon-jira-plain',
+    'devicon-terraform-plain',
+    'devicon-github-original',
+]
+import '../../shared/styles/fonts/rusty-cage-font.scss'
+import '../../shared/styles/fonts/cascadiya-code-font.scss'
+---
+<style lang="scss">
+    @import url('../detail-style.scss');
+</style>
+<section class="detail two-col">
+    <div class="content">
+        <h2>What can I Do</h2>
+        <p>Well, I am a Full Stack Developer</p>
+        <br>
+        <p>My experience has been quite varied throughout my coding journey. Take a look at any one of them. (Or just scroll)</p>
+        <button>
+            Know More
+        </button>
+    </div>
+    <div class="experiences">
+        <ExperienceCard height="medium" class="webDev" title="Web Dev" experience="6" projects="46" icons={webDevIcons}></ExperienceCard>
+        <ExperienceCard height="large" class="appDev" title="App Dev" experience="4" projects="12" deployments="4" icons={appDevIcons}></ExperienceCard>
+        <ExperienceCard height="small" class="backendDev" title="Server" projects="2" icons={serverIcons}></ExperienceCard>
+        <ExperienceCard height="small" class="tools" experience="3" title="Dev Ops" icons={devOpsIcons}></ExperienceCard>
+    </div>
+</section>

@@ -1,0 +1,101 @@
+---
+import ProjectCard from "./ProjectCard.astro";
+---
+
+<style lang="scss">
+        @import url("../detail-style.scss");
+</style>
+<section class="detail row">
+        <div class="content">
+                <h2>What have i done</h2>
+                <p>These are some of the projects that I have worked upon.</p>
+                <br />
+        </div>
+        <div class="projects">
+                <ProjectCard
+                        projectName="POS Billing Platform"
+                        route="project"
+                        techIcons={[
+                                "devicon-electron-original", // angular, typescript, electron, nodejs, mongodb
+                                "devicon-karma-plain",
+                                "devicon-angularjs-plain",
+                                "devicon-firebase-plain",
+                                "devicon-python-plain",
+                                "devicon-nodejs-plain",
+                                "devicon-typescript-plain",
+                                "devicon-ionic-original"
+                        ]}
+                        description="This is a full billing platform, consisting of an admin android app, a desktop billing app. The admin app was there to provide analytics and user management. Whereas the desktop app was used to generate bills."
+                />
+                <ProjectCard
+                        projectName="Payment Platform"
+                        route="project"
+                        techIcons={[
+                                "devicon-python-plain",
+                                "devicon-angularjs-plain",
+                                "devicon-firebase-plain",
+                                "devicon-typescript-plain",
+                                "devicon-flask-original",
+                                "devicon-ionic-original",
+                                "devicon-java-plain",
+                        ]}
+                        description='This was a payment platform consisting of an "App" and an "Admin Panel", to handle AEPS based transaction. This required hardware connection through USB port of any android device. Because it was payment platform, the connection was made E2E encrypted.'
+                />
+                <ProjectCard
+                        projectName="Home Service Booking Platform"
+                        route="project"
+                        techIcons={[
+                                "devicon-karma-plain",
+                                "devicon-angularjs-plain",
+                                "devicon-firebase-plain",
+                                "devicon-typescript-plain",
+                                "devicon-ionic-original",
+                                "devicon-sass-original",
+                                "devicon-redux-original"
+                        ]}
+                        description="A very simple E-Commerce based platform, it consisted of 2 Android Apps and 1 Web App. It was a team project, I was responsible for one of the Android App. This was the first time I used NGRX in production."
+                />
+                <ProjectCard
+                        projectName="Laundry Booking Platform"
+                        route="project"
+                        techIcons={[
+                                "devicon-karma-plain",
+                                "devicon-angularjs-plain",
+                                "devicon-firebase-plain",
+                                "devicon-typescript-plain",
+                                "devicon-ionic-original",
+                                "devicon-sass-original",
+                                "devicon-redux-original"
+                        ]}
+                        description="This was a very simple platform, consisting of 2 Android App and 1 Web App. It was unique in a way because it required a lot of interactions between the applications, so data transmission was a big challenge."
+                />
+                <ProjectCard
+                        projectName="Jewellery Booking Platform"
+                        route="project"
+                        techIcons={[
+                                "devicon-karma-plain",
+                                "devicon-angularjs-plain",
+                                "devicon-firebase-plain",
+                                "devicon-typescript-plain",
+                                "devicon-ionic-original",
+                                "devicon-sass-original",
+                                "devicon-redux-original"
+                        ]}
+                        description="Simple E-Commerce, the basic stuff, buying, cart, addresses, coupons, etc. The most challenging part was to create an algorithm which would take weigth, caret and size of a ring, and was able to derive a price for it."
+                />
+                <ProjectCard
+                        projectName="Shipment Management App"
+                        route="project"
+                        techIcons={[
+                                "devicon-karma-plain",
+                                "devicon-angularjs-plain",
+                                "devicon-firebase-plain",
+                                "devicon-typescript-plain",
+                                "devicon-ionic-original",
+                                "devicon-sass-original",
+                                "devicon-redux-original"
+                        ]}
+                        description="A platform to manage incoming shipments in a warehouse. easy part was to record items in entry and exit. Hard part was to sort the items on go and keep track of it for the next exit. And to do that efficiently, we had to use some speical algorithms for that."
+                />
+        </div>
+</section>
