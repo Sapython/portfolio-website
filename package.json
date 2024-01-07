@@ -6,13 +6,13 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
-    "preview": "astro preview",
+    "preview": "wrangler pages dev ./dist",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/check": "^0.3.4",
-    "@astrojs/cloudflare": "^8.0.2",
     "@astrojs/solid-js": "^4.0.1",
+    "@astrojs/vercel": "^6.1.3",
     "@studio-freight/lenis": "^1.0.27",
     "astro": "^4.1.1",
     "flubber": "github:ericbf/flubber#add-type-definitions",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/parallax-js": "^3.1.3",
-    "sass": "^1.69.7"
+    "sass": "^1.69.7",
+    "wrangler": "^3.22.3"
   }
 }

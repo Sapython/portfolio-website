@@ -1,7 +1,5 @@
 ---
 const { class:className, title, experience, projects, deployments, icons, height } = Astro.props;
-import '../../shared/styles/fonts/azonix-font.scss'
-import '../../shared/styles/fonts/cascadiya-code-font.scss'
 let svgHeight:number = 100;
 if (height == 'small'){
     svgHeight = 80;
@@ -121,6 +119,18 @@ if (height == 'small'){
                 fill:var(--primary-color);
                 height: calc(1px * var(--svg-height));
             }
+        }
+        .webDev{
+            grid-area: webDev;
+        }
+        .appDev{
+            grid-area: appDev;
+        }
+        .tools{
+            grid-area: tools;
+        }
+        .backendDev{
+            grid-area: backendDev;
         }
     }
 </style>

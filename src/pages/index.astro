@@ -1,16 +1,25 @@
 ---
 import Layout from "../layouts/Layout.astro"
-import PortfolioHeader from './PortfolioHeader/PortfolioHeader.astro'
-import '../shared/styles/fonts/amsterdam-one-font.scss'
-import '../shared/styles/fonts/cascadiya-code-font.scss'
-import '../shared/styles/fonts/devicon.min.css'
-import WhatCanIDo from "./WhatCanIDo/WhatCanIDo.astro"
+
+// Shared components
 import Spacer from "../shared/components/Spacer.astro"
-import WhatHaveIDone from "./WhatHaveIDone/WhatHaveIDone.astro"
-import WhomIHaveWorkedWith from "./WhomIHaveWorkedWith/WhomIHaveWorkedWith.astro"
-import AboutMe from "./AboutMe/AboutMe.astro"
-import ContactMe from "./ContactMe/ContactMe.astro"
+
+// Part of pages
+import PortfolioHeader from '../components/portfolio/PortfolioHeader/PortfolioHeader.astro'
+import WhatCanIDo from "../components/portfolio/WhatCanIDo/WhatCanIDo.astro"
+import WhatHaveIDone from "../components/portfolio/WhatHaveIDone/WhatHaveIDone.astro"
+import WhomIHaveWorkedWith from "../components/portfolio/WhomIHaveWorkedWith/WhomIHaveWorkedWith.astro"
+import AboutMe from "../components/portfolio/AboutMe/AboutMe.astro"
+import ContactMe from "../components/portfolio/ContactMe/ContactMe.astro"
 ---
+
+<style is:global>
+    @import url('../shared/styles/fonts/_devicon.min.css');
+    @import url('../shared/styles/fonts/_amsterdam_one_font.scss');
+    @import url('../shared/styles/fonts/_azonix_font.scss');
+    @import url('../shared/styles/fonts/_rusty_cage_font.scss');
+    @import url('../shared/styles/fonts/_cascadiya_code_font.scss');
+</style>
 <Layout title="Portfolio">
     <PortfolioHeader></PortfolioHeader>
     <Spacer margin="large"></Spacer>
