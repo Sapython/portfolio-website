@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 const { image, startYear, endYear, title, flipped } = Astro.props;
 ---
 <style lang="scss">
@@ -59,7 +60,7 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
 </script>
 
 <company-card class={flipped && 'flipped'}>
-    <img src={image}></img>
+    <Image src={image} alt={title}></Image>
     <span>{startYear}-{endYear}</span>
     <p>{title}</p>
 </company-card>

@@ -1,5 +1,22 @@
+---
+import { Image } from "astro:assets";
+import subtractedImage from "../../../assets/images/subtracted.png";
+import fullImage from "../../../assets/images/fullImage_removed.png"
+const imageWidths = [300, 600, 900, 1200, 1500, 1800, 2100, 2400];
+const screenSizes = `((min-width:2400px) and (max-width:8000px)) 2400px,
+((min-width:2100px) and (max-width:2400px)) 2100px,
+((min-width:1800px) and (max-width:2100px)) 1800px,
+((min-width:1500px) and (max-width:1800px)) 1500px,
+((min-width:1200px) and (max-width:1500px)) 1200px,
+((min-width:900px) and (max-width:1200px)) 900px,
+((min-width:600px) and (max-width:900px)) 600px,
+((min-width:300px) and (max-width:600px)) 300px,
+((max-width:300px)) 300px
+`;
+---
+
 <style lang="scss">
-        section.headerContainer {
+section.headerContainer {
         display: grid;
         grid-template-columns: 1fr;
         width: 100vw;
@@ -290,19 +307,10 @@
 <section class="headerContainer">
         <div id="overlay"></div>
         <div id="scene">
-                <img
-                        data-depth="0.1"
-                        class="backgroundImage"
-                        src="subtracted.png"
-                        alt=""
-                />
+                <Image src={subtractedImage} sizes={screenSizes} widths={imageWidths} data-depth="0.1" class="backgroundImage" alt="A dark greyish sky" />
         </div>
         <div class="portfolioContainer">
-                <img
-                        class="portfolioImage"
-                        src="fullImage_removed.png"
-                        alt=""
-                />
+                <Image src={fullImage} sizes={screenSizes} widths={imageWidths} class="portfolioImage" alt="Mount Fuji" />
                 <span></span>
         </div>
         <div class="contentContainer">

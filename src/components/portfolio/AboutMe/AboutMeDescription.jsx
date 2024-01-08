@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import './aboutMeDescription.scss'
+import "./aboutMeDescription.scss";
 export function AboutMeDescription() {
     const [descriptionType,setDescriptionType]  = createSignal("professional")
     const toggle = () => {

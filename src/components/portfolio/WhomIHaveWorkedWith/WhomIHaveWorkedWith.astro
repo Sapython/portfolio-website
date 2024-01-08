@@ -1,7 +1,9 @@
 ---
 import CompanyCard from "./CompanyCard.astro";
 import "../portfolio.scss"
-
+import githubImage from "../../../assets/images/github-original.png";
+import swayambhuImage from "../../../assets/images/swayambhu.png";
+import shreevaImage from "../../../assets/images/shreeva.png";
 ---
 
 <section class="detail row innerPadding">
@@ -11,8 +13,8 @@ import "../portfolio.scss"
         <br>
     </div>
     <div class="companies">
-        <CompanyCard title="Github" image="github-original.png" startYear="2018" endYear="2023"></CompanyCard>
-        <CompanyCard title="Shreeva" flipped={true} image="shreeva.png" startYear="2021" endYear="2023"></CompanyCard>
-        <CompanyCard title="Swayambhu" image="swayambhu.png" startYear="2019" endYear="2021"></CompanyCard>
+        <CompanyCard title="Github" image={githubImage} startYear="2018" endYear="2023"></CompanyCard>
+        <CompanyCard title="Shreeva" flipped={true} image={shreevaImage} startYear="2021" endYear="2023"></CompanyCard>
+        <CompanyCard title="Swayambhu" image={swayambhuImage} startYear="2019" endYear="2021"></CompanyCard>
     </div>
 </section>
