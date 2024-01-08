@@ -3,7 +3,7 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
 ---
 <style lang="scss">
     company-card{
-        background-image:url('company.svg');
+        background-image:url('/company.svg');
         background-repeat:no-repeat;
         background-size: 130%;
         background-position:center;
@@ -49,7 +49,7 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
     }
 </style>
 <script lang="ts">
-    export class CompanyCard extends HTMLElement{
+    class CompanyCard extends HTMLElement{
         constructor(){
             super();
         }

@@ -53,18 +53,6 @@ section.detail{
         display: grid;
         grid-template-areas: 'webDev webDev appDev' 'tools backendDev appDev';
         gap:20px;
-        .webDev{
-            grid-area: webDev;
-        }
-        .appDev{
-            grid-area: appDev;
-        }
-        .tools{
-            grid-area: tools;
-        }
-        .backendDev{
-            grid-area: backendDev;
-        }
     }
     > .projects{
         display: grid;

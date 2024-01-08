@@ -1,0 +1,202 @@
+section.detail{
+    background: var(--background-color);
+    overflow: hidden;
+    $padding-inline:120px;
+    > .content{
+        max-width: 500px;
+        h2{
+            font-family: 'RustyCage';
+            font-weight: 500;
+            font-size: 80px;
+            margin-bottom: 20px;
+            color:var(--primary-color);
+        }
+        br{
+            display: block;
+            margin-bottom: 20px;
+        }
+        p{
+            font-family: 'CascadiyaCode';
+            color:var(--primary-color);
+            font-size: 20px;
+        }
+        button{
+            height: 50px;
+            background: transparent;
+            color:var(--primary-contrast-color);
+            border: none;
+            border-radius: 20px;
+            background: var(--primary-color);
+            font-family: 'CascadiyaCode';
+            font-size: 20px;
+            padding: 10px 25px;
+        }
+        .icons{
+            display: flex;
+            gap:10px;
+        }
+        .buttons{
+            display: flex;
+            gap:20px;
+            button.icon{
+                background: transparent;
+                border: 2px solid var(--primary-color);
+                border-radius: 25px;
+                padding: 15px;
+                width: 50px;
+                height: 50px;
+                padding: 0;
+            }
+        }
+    }
+    > .experiences{
+        display: grid;
+        grid-template-areas: 'webDev webDev appDev' 'tools backendDev appDev';
+        gap:20px;
+    }
+    > .projects{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap:45px;
+        padding-inline: 70px; // additional padding
+        padding-bottom: 70px;
+    }
+    > .companies{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    &.two-col{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+        padding-inline: $padding-inline;
+        .col{
+            width: 48%;
+            margin-bottom: 2rem;
+            @media (max-width: 850px){
+                width: 100%;
+            }
+        }
+    }
+    &.row{
+        padding-inline: $padding-inline;
+        display: flex;
+        flex-direction: column;
+        gap:20px;
+    }
+    &.aboutMe{
+        padding-inline: $padding-inline;
+        display: grid;
+        grid-template-columns: 3fr 1.5fr;
+        .content{
+            max-width: inherit;
+        }
+    }
+    // responsive for 1200px
+    @media screen and (max-width: 1690px){
+        &.two-col{
+            gap:50px;
+            padding-inline: 80px;
+        }
+        &.row{
+            padding-inline: 80px;
+        }
+        &.aboutMe{
+            padding-inline: 80px;
+        }
+        > .content{
+            width: 80vw;
+        }
+        > .projects{
+            padding-inline: 0px;
+            grid-template-columns: 1fr 1fr;
+            gap:20px;
+        }
+    }
+    // responsive for 850px 
+    @media screen and (max-width: 850px){
+        &.two-col{
+            flex-direction: column;
+            gap:50px;
+            padding-inline:80px;
+            .col{
+                width: 100%;
+            }
+        }
+        &.row{
+            padding-inline:80px;
+        }
+        &.aboutMe{
+            padding-inline: 80px;
+        }
+        > .content{
+            width: 80vw;
+        }
+        > .projects{
+            padding-inline: 0px;
+            grid-template-columns: 1fr 1fr;
+            gap:20px;
+        }
+    }
+    @media screen and (max-width: 600px){
+        &.row{
+            padding-inline: 40px;
+        }
+        &.aboutMe{
+            padding-inline: 40px;
+            grid-template-columns: 1fr;
+            .content{
+                max-width: 100%;
+            }
+        }
+        &.two-col{
+            padding-inline: 40px;
+            .col{
+                width: 100%;
+            }
+        }
+        > .content{
+            width: 100%;
+        }
+        > .projects{
+            padding-inline: 20px;
+            grid-template-columns: 1fr;
+            gap:20px;
+        }
+    }
+    @media screen and (max-width: 500px){
+        &.row{
+            padding-inline: 20px;
+        }
+        &.aboutMe{
+            padding-inline: 20px;
+        }
+        &.two-col{
+            padding-inline: 20px;
+        }
+        &.innerPadding{
+            padding-inline: 0px;
+            .content{
+                padding-inline: 20px;
+            }
+        }
+        > .content{
+            width: 100%;
+        }
+        > .projects{
+            padding-inline: 20px;
+        }
+        > .experiences{
+            width: 100%;
+            grid-template-areas: "webDev" "appDev" "backendDev" "tools";
+        }
+        > .companies{
+            flex-direction: column;
+        }
+        
+    }
+}
