@@ -12,9 +12,100 @@ const { title } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<meta content="en_US" property="og:locale" />
+		<meta content="article" property="og:type" />
+		<meta content="https://sapython.me/" property="og:url" />
+		<meta content="Sapython" property="og:site_name" />
+		<meta content={title} property="og:title" />
+		<meta content="Friday, April 23rd, 2021, 7:30 pm" name="revised" />
+		<meta
+		  content="A self taught programmer who can build apps, websites, and servers. For any open source or commercial projects."
+		  property="og:description" />
+		<meta content="https://sapython.me/images/logoFull.png" property="og:image" />
+		<meta content="Official Sapython Logo" property="og:image:alt" />
+		<meta content="image/png" property="og:image:type" />
+		<meta content="1500" property="og:image:width" />
+		<meta content="1500" property="og:image:height" />
+		<meta content="saptampro2003@gmail.com" name="og:email" />
+		<meta content="+91 9517457296" name="og:phone_number" />
+		<meta content="Avas Vikas Colony Jhunsi Allahabad" name="og:street-address" />
+		<meta content="India" name="og:locality" />
+		<meta content="IN" name="og:region" />
+		<meta content="211019" name="og:postal-code" />
+		<meta content="INDIA" name="og:country-name" />
+		<!-- Twitter Tags -->
+		<meta content="summary" property="twitter:card" />
+		<meta content={title} property="twitter:title" />
+		<meta
+		  content="A self taught programmer who can build apps, websites, and servers. For any open source or commercial projects."
+		  property="twitter:description" />
+		<meta content="https://sapython.me/images/Sapython-Banner.webp" property="twitter:image" />
+		<meta content="Our Official sapython banner." property="twitter:image:alt" />
+		<meta content="@kumar_saptam" name="twitter:site" />
+		<meta content="@kumar_saptam" name="twitter:creator" />
+		<!-- General tags -->
+		<link href="manifest.json" rel="manifest" />
+		<meta content="#1b202a" name="theme-color" />
+		<meta content="Global" name="distribution" />
+		<meta content="Kumar Saptam" name="author" />
+		<link href="/favicon.ico" rel="icon" sizes="192x192" />
+		<link href="/favicon.ico" rel="icon" sizes="192x192 16x16 32x32 64x64 128x128" />
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<meta content="60000" http-equiv="Expires" />
+		<meta
+		  content="Sapython the official website for sapython website studio and kumar saptam. Here you can order websites, apps, server managers and cross platform softwares.Here at Sapython you can get your custom websites and apps, with latest and greatest features."
+		  name="description" />
+		<meta
+		  content="Saptam, sapython, programming, python, app, website, kumar saptam, how to create a website, how to create an app, how to develop a website, develop a website for free, make a website for free, make an app for free, kumar saptam portfolio, "
+		  name="keywords" />
+		<meta content="IE=edge" http-equiv="X-UA-Compatible" />
+		<meta content="sapython" name="application-name" />
+		<meta content="Kumar Saptam" name="designer" />
+		<meta content="Kumar Saptam" name="owner" />
+		<meta content="https://sapython.me/" name="url" />
+		<meta content="The official home page of Sapython Solutions" name="pagename" />
+		<meta content="Worldwide" name="coverage" />
+		<meta content="General" name="rating" />
+		<meta content="7 days" name="revisit-after" />
+		<meta content="This is my subtitle" name="subtitle" />
+		<meta content="all" name="target" />
+		<meta content="True" name="HandheldFriendly" />
+		<meta content="320" name="MobileOptimized" />
+		<meta content="Jan. 23, 2021" name="date" />
+		<meta content="home page" name="medium" />
+		<!-- Apple tags -->
+		<meta content="Sapython" name="apple-mobile-web-app-title" />
+		<meta content="yes" name="apple-mobile-web-app-capable" />
+		<meta content="yes" name="apple-touch-fullscreen" />
+		<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+		<meta content="telephone=no" name="format-detection" />
+		<link href="/logo.png" rel="apple-touch-icon" type="image/png" />
+		<link href="logo-72-72.png" rel="apple-touch-icon" sizes="72x72" />
+		<link href="logo-114-114.png" rel="apple-touch-icon" sizes="114x114" />
+		<link href="/Sapython-Banner.webp" rel="apple-touch-startup-image" />
+		<link href="/logo-114-114.png" rel="apple-touch-icon-precomposed" sizes="114x114" />
+		<link href="/logo-72-72.png" rel="apple-touch-icon-precomposed" sizes="72x72" />
+		<link href="/logo-57-57.png" rel="apple-touch-icon-precomposed" sizes="57x57" />
+		<!-- Google tags -->
+		<meta content="Python, Software, App, Website, Developer, Github, Fryerman" name="news_keywords" />
+		<meta content="index, follow" name="robots" />
+		<meta name="Googlebot:noarchive" />
+		<meta content="https://www.metatags.org/nospamharvesting" name="no-email-collection" />
+		<meta content="7 days" name="revisit-after" />
+		<!-- Google Tag Manager -->
+		<script>(function (w:any, d:any, s:any, l:any, i:any) {
+			w[l] = w[l] || []; w[l].push({
+			  'gtm.start':
+				new Date().getTime(), event: 'gtm.js'
+			}); var f = d.getElementsByTagName(s)[0],
+			  j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+				'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+		  })(window, document, 'script', 'dataLayer', 'GTM-PXCHCQ8');</script>
+		<!-- End Google Tag Manager -->
+		<link href="/favicon.ico" rel="icon" sizes="16x16 32x32" type="image/png" />
 	</head>
 	<body>
 		<slot />
