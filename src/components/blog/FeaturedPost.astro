@@ -1,0 +1,27 @@
+---
+import Socials, { SocialMediaPostProps } from './Socials.astro';
+
+interface Props {
+    date:string;
+    title:string;
+    links:SocialMediaPostProps["links"],
+    slug:string;
+}
+const { date, title, links, slug } = Astro.props;
+const actualDate =  new Date(date);
+if (!actualDate){
+    throw new Error("Invalid date");
+}
+const isoDate = actualDate.toISOString();
+const localDate = actualDate.toLocaleDateString();
+---
+<style>
+</style>
+<div class="featuredPost">
+    <time datetime={isoDate}>{localDate}</time>
+    <h3>{title}</h3>
+    <div class="actions">
+        <Socials links={links}/>
+        <a href={`blog/${slug}`}>Read More</a>
+    </div>
+</div>

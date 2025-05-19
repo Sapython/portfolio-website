@@ -1,0 +1,37 @@
+---
+interface Props{
+    links:{
+        icon:string;
+        path:string;
+    }[]
+}
+export interface SocialMediaPostProps extends Props{}
+const  { links } = Astro.props;
+---
+
+<style lang="scss">
+    .icons{
+        display: flex;
+        gap:7px;
+        a{
+            width: 25px;
+            height: 25px;
+            background: #565656;
+            display: grid;
+            place-items: center;
+            border-radius: 5px;
+            text-decoration: none;
+            i{
+                font-size: 20px;
+                color:var(--primary-color)
+            }
+        }
+    }
+</style>
+<div class="icons">
+    {links.map((link)=>(
+        <a href={link.path}>
+            <i class={link.icon}></i>
+        </a>
+    ))}
+</div>

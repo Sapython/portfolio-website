@@ -1,0 +1,33 @@
+---
+import Socials, { type SocialMediaPostProps } from '../../components/blog/Socials.astro'
+
+interface Props {
+    tags: { title: string; description: string; createdDate: Date; sortOrder: number; }[];
+    date:Date;
+    title:string;
+    decription:string;
+    links:SocialMediaPostProps['links'],
+    slug:string;
+}
+
+const {date,title,decription,links,tags,slug} = Astro.props;
+const isoDate = new Date(date).toISOString();
+const localDateString = new Date(date).toLocaleDateString();
+---
+<style>
+
+</style>
+<div class="post">
+    <time datetime={isoDate}>{localDateString}</time>
+    <h3>{title}</h3>
+    <div class="tags">
+        {tags.map(tag => <a href={`/tags/${tag}`}>{tag.title}</a>)}
+    </div>
+    <p>{decription}</p>
+    <div class="actions">
+        <Socials links={links}/>
+        <a href={`blog/${slug}`}>
+            Read More
+        </a>
+    </div>
+</div>

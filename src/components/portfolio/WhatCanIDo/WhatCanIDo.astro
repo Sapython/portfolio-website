@@ -1,5 +1,6 @@
 ---
 import ExperienceCard from "./ExperienceCard.astro";
+import NonExperienceCard from "./NonExperienceCard.astro";
 let webDevIcons = [
     'devicon-typescript-plain',
     'devicon-angularjs-plain',
@@ -52,9 +53,15 @@ import "../portfolio.scss";
         </button>
     </div>
     <div class="experiences">
+        <NonExperienceCard height="medium" class="webDev" title="Web Dev" experience="6" projects="46" icons={webDevIcons}></NonExperienceCard>
+        <NonExperienceCard height="large" class="appDev" title="App Dev" experience="4" projects="12" deployments="4" icons={appDevIcons}></NonExperienceCard>
+        <NonExperienceCard height="small" class="backendDev" title="Server" projects="2" icons={serverIcons}></NonExperienceCard>
+        <NonExperienceCard height="small" class="tools" experience="3" title="Dev Ops" icons={devOpsIcons}></NonExperienceCard>
+    </div>
+    <!-- <div class="experiences">
         <ExperienceCard height="medium" class="webDev" title="Web Dev" experience="6" projects="46" icons={webDevIcons}></ExperienceCard>
         <ExperienceCard height="large" class="appDev" title="App Dev" experience="4" projects="12" deployments="4" icons={appDevIcons}></ExperienceCard>
         <ExperienceCard height="small" class="backendDev" title="Server" projects="2" icons={serverIcons}></ExperienceCard>
         <ExperienceCard height="small" class="tools" experience="3" title="Dev Ops" icons={devOpsIcons}></ExperienceCard>
-    </div>
+    </div> -->
 </section>

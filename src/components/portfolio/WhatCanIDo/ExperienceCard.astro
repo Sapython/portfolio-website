@@ -18,13 +18,16 @@ if (height == 'small'){
 
     class ExperienceCard extends HTMLElement {
         delayValue:number = 0;
+        NUMBER_OF_POINTS:number = 10;
+        MINIMUM_FREQUENCY:number = 10;
+        MAXIMUM_FREQUENCY:number = 30;
         constructor(){
             super();
             if (window.innerWidth < 500){
                 this.dataset.svgheight = "80";
             }
             console.log("this.dataset.",this.dataset,this.dataset.svgheight);
-            const initalWave = generateRandomWave(15,2,30,Number(this.dataset.svgheight));
+            const initalWave = generateRandomWave(this.NUMBER_OF_POINTS,this.MINIMUM_FREQUENCY,this.MAXIMUM_FREQUENCY,Number(this.dataset.svgheight));
             const path = this.querySelector("path");
             let DURATION_RANGE = [3000,5000];
             var DURATION = Math.floor(Math.random() * (DURATION_RANGE[1] - DURATION_RANGE[0] + 1) + DURATION_RANGE[0]);
@@ -35,7 +38,7 @@ if (height == 'small'){
                     const currentPath = path.getAttribute("d");
                     path?.setAttribute('d',initalWave)
                     if (currentPath){
-                        let randomWave = generateRandomWave(15,2,30,Number(this.dataset.svgheight))
+                        let randomWave = generateRandomWave(this.NUMBER_OF_POINTS,this.MINIMUM_FREQUENCY,this.MAXIMUM_FREQUENCY,Number(this.dataset.svgheight))
                         let mixPaths = interpolate(currentPath, randomWave);
                         animate((progress) => path.setAttribute("d", mixPaths(progress)), {duration: DURATION/1000});
                     }

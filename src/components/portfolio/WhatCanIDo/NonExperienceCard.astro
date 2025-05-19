@@ -1,0 +1,252 @@
+---
+const { class: className, title, experience, projects, deployments, icons, height } = Astro.props;
+let canvasHeight = 100;
+if (height === 'small') {
+    canvasHeight = 80;
+} else if (height === 'medium') {
+    canvasHeight = 150;
+} else if (height === 'large') {
+    canvasHeight = 220;
+} else {
+    canvasHeight = 150;
+}
+---
+
+<style lang="scss">
+    non-experience-card.experience {
+        border-radius: 20px;
+        background: #161616;
+        box-shadow: inset 0px 3px 30px rgba(0, 0, 0, 44%);
+        padding-bottom: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.3s ease-in-out;
+        border: transparent 2px solid;
+        &:hover{
+            border: #583925 2px solid;
+            cursor: pointer;
+        }
+        .content {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            gap: 10px;
+            padding: 20px;
+            font-family: "CascadiyaCode";
+
+            & > * {
+                margin: 0;
+            }
+
+            h4 {
+                font-family: "Azonix";
+                -webkit-text-stroke-width: 1px;
+                -webkit-text-stroke-color: var(--primary-color);
+                color: white;
+                text-shadow: 0px 0px 60px var(--primary-color);
+                text-align: left;
+                font-size: 30px;
+                margin: 0px;
+                animation: flicker 3s infinite;
+
+                @keyframes flicker {
+                    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                        text-shadow: 0px 0px 60px var(--primary-color);
+                    }
+                    20%, 24%, 55% {
+                        text-shadow: none;
+                    }
+                }
+            }
+
+            p {
+                color: var(--primary-color);
+                text-align: left;
+            }
+
+            .icons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+
+                i {
+                    color: var(--primary-color);
+                    font-size: 25px;
+                }
+            }
+        }
+
+        canvas {
+            width: 100%;
+            height: 20%;
+        }
+
+        &.webDev {
+            grid-area: webDev;
+        }
+
+        &.appDev {
+            grid-area: appDev;
+        }
+
+        &.tools {
+            grid-area: tools;
+        }
+
+        &.backendDev {
+            grid-area: backendDev;
+        }
+    }
+</style>
+
+<non-experience-card role="link" href="/webdev" class:list={['experience', className]} style={{ '--canvas-height': canvasHeight }} data-canvasHeight={canvasHeight}>
+    <div class="content">
+        <h4>{title}</h4>
+        {experience && <p>+{experience} Years Experience</p>}
+        {projects && <p>+{projects} Production Projects</p>}
+        {deployments && <p>+{deployments} Active Deployments</p>}
+        <div class="icons">
+            {icons && icons.map((icon: any) => <i class={icon}></i>)}
+        </div>
+    </div>
+    <canvas></canvas>
+</non-experience-card>
+
+<svg width="0" height="0">
+    <filter id="strong-inner">
+        <feFlood flood-color="rgba(0,0,0,94%)" />
+        <feComposite operator="out" in2="SourceGraphic" />
+        <feMorphology operator="dilate" radius="10" />
+        <feGaussianBlur stdDeviation="8" />
+        <feComposite operator="atop" in2="SourceGraphic" />
+    </filter>
+</svg>
+
+<script>
+    import { interpolate } from "flubber";
+    import { generateRandomWave } from './waves';class NonExperienceCard extends HTMLElement {
+        delayValue: number;
+        ctx: CanvasRenderingContext2D | null = null;
+        currentPath: string = '';
+        animationFrameId: number | null = null;
+        lastAnimationTime: number = 0;
+        DURATION: number;
+        NUMBER_OF_POINTS:number = 10;
+        MINIMUM_FREQUENCY:number = 10;
+        MAXIMUM_FREQUENCY:number = 30;
+
+        constructor() {
+            super();
+            this.delayValue = Math.floor(Math.random() * 3001);
+            this.dataset.canvasheight = window.innerWidth < 500 ? "80" : "150";
+            this.DURATION = 2000;
+            this.addEventListener('click', this.handleClick.bind(this));
+        }
+
+        connectedCallback() {
+            this.initCanvas();
+            this.startAnimation();
+        }
+
+        initCanvas() {
+            const canvas = this.querySelector("canvas");
+            if (canvas) {
+                canvas.width = this.offsetWidth;
+                canvas.height = Number(this.dataset.canvasheight);
+                this.ctx = canvas.getContext("2d");
+                if (this.ctx) {
+                    this.ctx.strokeStyle = getComputedStyle(this).getPropertyValue('--primary-color');
+                    this.ctx.lineWidth = 2;
+                    this.currentPath = generateRandomWave(this.NUMBER_OF_POINTS, this.MINIMUM_FREQUENCY, this.MAXIMUM_FREQUENCY, Number(this.dataset.canvasheight), canvas.width);
+                    this.drawPath(this.currentPath);
+                }
+            }
+        }        startAnimation() {
+            this.DURATION = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000);
+            this.lastAnimationTime = performance.now();
+            this.animationLoop(this.lastAnimationTime);
+        }
+
+        animationLoop(timestamp: number) {
+            const elapsed = timestamp - this.lastAnimationTime;
+            
+            if (elapsed >= this.DURATION) {
+                this.animateWave();
+                this.lastAnimationTime = timestamp;
+            }
+            
+            this.animationFrameId = requestAnimationFrame(this.animationLoop.bind(this));
+        }        animateWave() {
+            const DURATION_RANGE = [3000, 5000];
+            const changeDuration = Math.floor(Math.random() * (DURATION_RANGE[1] - DURATION_RANGE[0] + 1) + DURATION_RANGE[0]);
+            const newPath = generateRandomWave(this.NUMBER_OF_POINTS, this.MINIMUM_FREQUENCY, this.MAXIMUM_FREQUENCY, Number(this.dataset.canvasheight), this.ctx?.canvas.width || 1000);
+
+            const interpolatePaths = interpolate(this.currentPath, newPath, { maxSegmentLength: 10 });
+            
+            // Store animation start time and duration for custom animation
+            const startTime = performance.now();
+            const durationMs = changeDuration / 1000 * 1000; // Convert to milliseconds
+            
+            // Create custom animation frame using requestAnimationFrame instead of the motion library
+            const animateFrame = (timestamp: number) => {
+                if (!this.ctx) return;
+                
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / durationMs, 1);
+                
+                this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+                const path = interpolatePaths(progress);
+                this.drawPath(path);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateFrame);
+                }
+            };
+            
+            // Start the animation
+            requestAnimationFrame(animateFrame);
+
+            this.currentPath = newPath;
+            this.DURATION = changeDuration;
+        }
+
+        drawPath(d: string) {
+            if (this.ctx) {
+                const path = new Path2D(d);
+                this.ctx.save();
+                this.ctx.fillStyle = getComputedStyle(this).getPropertyValue('--primary-color');
+                this.ctx.filter = 'url(#strong-inner)';
+                this.ctx.fill(path);
+                this.ctx.stroke(path);
+                this.ctx.restore();
+            }
+        }        disconnectedCallback() {
+            if (this.animationFrameId) {
+                cancelAnimationFrame(this.animationFrameId);
+                this.animationFrameId = null;
+            }
+        }
+
+        // trigger a link click
+        handleClick() {
+            const link = this.getAttribute('href');
+            if (link) {
+                window.location.href
+                    = link;
+            }
+        }
+    }
+    // Register the custom element
+    if (!customElements.get('non-experience-card')) {
+        customElements.define('non-experience-card', NonExperienceCard);
+    }
+    // // Add event listener for click
+    // const nonExperienceCard = document.querySelector('non-experience-card');
+    // if (nonExperienceCard) {
+    //     nonExperienceCard.addEventListener('click', nonExperienceCard.handleClick.bind(nonExperienceCard));
+    // }
+</script>

@@ -1,0 +1,105 @@
+---
+import { getCollection } from "astro:content"
+import LastRead from '../../components/blog/LastRead.astro'
+import PostCard from '../../components/blog/PostCard.astro'
+
+const posts = await getCollection("posts")
+let tags = await getCollection("tags")
+tags = tags.sort((a,b)=>a.data.sortOrder-b.data.sortOrder);
+// console.log(tags);
+const nextUpdateDay = (new Date()).getDay()
+const highlightedPosts = posts.filter(post=>post.data.featured).filter((post,i)=>i<3)
+const tagWisePosts = tags.map(tag=>({
+    tag:tag.data,
+    posts:posts.filter(post=>post.data.tags.find(t=>t.slug===tag.slug)).map((post)=>{
+        return {
+            ...post,
+            data:{
+                ...post.data,
+                tags:post.data.tags.filter(t=>t.slug===tag.slug) as any
+            }
+        }
+    })
+}))
+console.log(tagWisePosts);
+---
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Blog</title>
+        <script>
+            import MiniMasonry from "minimasonry";
+            var masonry = new MiniMasonry({
+                container: 'section#posts',
+                gutterX:60,
+                gutterY:30
+            });
+        </script>
+        <style lang="scss">
+            @import 'remixicon/fonts/remixicon.css';
+            @import url('/fonts/_rusty_cage_font.scss');
+            @import url('/fonts/_cascadiya_code_font.scss');
+            @import url("/styles/global.scss");
+            section{
+                .post{
+                    position: absolute;
+                    padding: 20px;
+                    border: 1px solid black;
+                    a{
+                        // button
+                        display: inline-block;
+                        padding: 10px;
+                        background-color: black;
+                        color: white;
+                        text-decoration: none;
+                        &:hover{
+                            background-color: white;
+                            color: black;
+                            border: 1px solid black;
+                        }
+                    }
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <section class="header">
+            <h1>Random Dude's BLOG</h1>
+            <div class="update">
+                <p>Updated every 3 days</p>
+                <p>Next Update: {nextUpdateDay}</p>
+            </div>
+        </section>
+        <hr>
+        <section class="highlights">
+            <h2>Highlights</h2>
+            <div class="grid">
+                {highlightedPosts.map(post=>
+                    (<div class="post">
+                        
+                        <h2>{post.data.title}</h2>
+                        <p>{post.data.description}</p>
+                        <a href={`/blog/${post.slug}`}>Read More</a>
+                    </div>)
+                )}
+                <LastRead/>
+            </div>
+        </section>
+        {tagWisePosts.map(tag=>{
+            return (
+                <section class="tag">
+                    <h2>{tag.tag.title}</h2>
+                    <div class="grid">
+                        {tag.posts.map(post=>
+                            (<PostCard date={post.data.date} decription={post.data.description} links={post.data.social} slug={post.slug} tags={post.data.tags} title={post.data.title} />)
+                        )}
+                    </div>
+                </section>
+            )
+        })}
+
+    </body>
+</html>

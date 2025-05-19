@@ -11,7 +11,7 @@ const { projectName, description, techIcons } = Astro.props;
     customElements.define('project-card', ProjectCard);
 </script>
 <style lang="scss">
-    .cacadiyaFont{
+    .cascadiyaFont{
         font-family: 'CascadiyaCode';
     }
     project-card{
@@ -29,14 +29,15 @@ const { projectName, description, techIcons } = Astro.props;
             margin: 0;
         }
         h3{
-            @extend .cacadiyaFont;
+            @extend .cascadiyaFont;
             font-size: 25px;
             color:var(--primary-color);
             margin-top: 20px;
         }
         p{
-            @extend .cacadiyaFont;
+            @extend .cascadiyaFont;
             font-size: 16px;
+            font-weight: 500;
             color:var(--primary-color);
         }
         .icons{
@@ -55,23 +56,30 @@ const { projectName, description, techIcons } = Astro.props;
             justify-content: flex-end;
             align-items: center;
             gap:20px;
+            button{
+                cursor: pointer;
+                transition: scale 0.2s ease-in-out;
+                &:hover{
+                    scale:1.04;
+                }
+            }
             button:nth-child(1){
-                @extend .cacadiyaFont;
+                @extend .cascadiyaFont;
                 background:$contrast;
-                border: 3px solid $primary;
+                border: 1px solid $primary;
                 padding: 10px 16px;
                 border-radius: 10px;
                 color:$primary;
-                font-weight: bold;
+                font-weight: 500;
             }
             button:nth-child(2){
-                @extend .cacadiyaFont;
+                @extend .cascadiyaFont;
                 background: $primary;
-                border: 3px solid $primary;
+                border: 1px solid $primary;
                 padding: 10px 16px;
                 border-radius: 10px;
                 color:$contrast;
-                font-weight: bold;
+                font-weight: 500;
             }
         }
         @media screen and (max-width: 850px) {

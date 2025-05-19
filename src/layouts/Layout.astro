@@ -111,14 +111,6 @@ const { title } = Astro.props;
 		<slot />
 	</body>
 </html>
-<style is:global>
-	:root {
-        --primary-color:#BB7A4F;
-		--background-color:#202425;
-		--primary-contrast-color:#202425;
-	}
-	body{
-		margin: 0;
-		background: var(--background-color);
-	}
+<style is:global lang="scss">
+	@import url("/styles/global.scss");
 </style>

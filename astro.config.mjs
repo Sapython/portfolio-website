@@ -7,5 +7,8 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   integrations: [solidJs()],
   output: "server",
-  adapter: cloudflare()
+  adapter: cloudflare(),
+  devToolbar:{
+    enabled:false
+  }
 });
