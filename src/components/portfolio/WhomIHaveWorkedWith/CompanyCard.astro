@@ -50,13 +50,15 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
     }
 </style>
 <script lang="ts">
-    class CompanyCard extends HTMLElement{
-        constructor(){
-            super();
+    if (!customElements.get('company-card')) {
+        class CompanyCard extends HTMLElement{
+            constructor(){
+                super();
+            }
         }
-    }
 
-    customElements.define('company-card', CompanyCard);
+        customElements.define('company-card', CompanyCard);
+    }
 </script>
 
 <company-card class={flipped && 'flipped'}>

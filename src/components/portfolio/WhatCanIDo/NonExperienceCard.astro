@@ -128,16 +128,24 @@ if (height === 'small') {
 
 <script>
     import { interpolate } from "flubber";
-    import { generateRandomWave } from './waves';class NonExperienceCard extends HTMLElement {
+    import { generateRandomWave } from './waves';
+
+    if (!customElements.get('non-experience-card')) {
+        class NonExperienceCard extends HTMLElement {
         delayValue: number;
         ctx: CanvasRenderingContext2D | null = null;
         currentPath: string = '';
         animationFrameId: number | null = null;
+        waveAnimationFrameId: number | null = null;
         lastAnimationTime: number = 0;
         DURATION: number;
-        NUMBER_OF_POINTS:number = 10;
-        MINIMUM_FREQUENCY:number = 10;
-        MAXIMUM_FREQUENCY:number = 30;
+        NUMBER_OF_POINTS: number = 10;
+        MINIMUM_FREQUENCY: number = 10;
+        MAXIMUM_FREQUENCY: number = 30;
+        isVisible: boolean = false;
+        isAnimating: boolean = false;
+        observer: IntersectionObserver | null = null;
+        prefersReducedMotion: boolean = false;
 
         constructor() {
             super();
@@ -145,11 +153,41 @@ if (height === 'small') {
             this.dataset.canvasheight = window.innerWidth < 500 ? "80" : "150";
             this.DURATION = 2000;
             this.addEventListener('click', this.handleClick.bind(this));
+
+            // Check for reduced motion preference
+            this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         }
 
         connectedCallback() {
             this.initCanvas();
-            this.startAnimation();
+            this.setupIntersectionObserver();
+        }
+
+        setupIntersectionObserver() {
+            // Only animate when card is in viewport with 100px margin
+            const options = {
+                root: null,
+                rootMargin: '100px',
+                threshold: 0.1
+            };
+
+            this.observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    this.isVisible = entry.isIntersecting;
+
+                    if (entry.isIntersecting && !this.prefersReducedMotion) {
+                        // Card is visible, start animation
+                        if (!this.isAnimating) {
+                            this.startAnimation();
+                        }
+                    } else {
+                        // Card is not visible, stop animation
+                        this.stopAnimation();
+                    }
+                });
+            }, options);
+
+            this.observer.observe(this);
         }
 
         initCanvas() {
@@ -157,7 +195,10 @@ if (height === 'small') {
             if (canvas) {
                 canvas.width = this.offsetWidth;
                 canvas.height = Number(this.dataset.canvasheight);
-                this.ctx = canvas.getContext("2d");
+                this.ctx = canvas.getContext("2d", {
+                    alpha: true,
+                    desynchronized: true // Better performance for animations
+                });
                 if (this.ctx) {
                     this.ctx.strokeStyle = getComputedStyle(this).getPropertyValue('--primary-color');
                     this.ctx.lineWidth = 2;
@@ -165,50 +206,86 @@ if (height === 'small') {
                     this.drawPath(this.currentPath);
                 }
             }
-        }        startAnimation() {
+        }
+
+        startAnimation() {
+            if (this.isAnimating) return;
+
+            this.isAnimating = true;
             this.DURATION = Math.floor(Math.random() * (5000 - 3000 + 1) + 3000);
             this.lastAnimationTime = performance.now();
             this.animationLoop(this.lastAnimationTime);
         }
 
+        stopAnimation() {
+            this.isAnimating = false;
+
+            if (this.animationFrameId) {
+                cancelAnimationFrame(this.animationFrameId);
+                this.animationFrameId = null;
+            }
+
+            if (this.waveAnimationFrameId) {
+                cancelAnimationFrame(this.waveAnimationFrameId);
+                this.waveAnimationFrameId = null;
+            }
+        }
+
         animationLoop(timestamp: number) {
+            if (!this.isAnimating || !this.isVisible) {
+                this.animationFrameId = null;
+                return;
+            }
+
             const elapsed = timestamp - this.lastAnimationTime;
-            
+
             if (elapsed >= this.DURATION) {
                 this.animateWave();
                 this.lastAnimationTime = timestamp;
             }
-            
+
             this.animationFrameId = requestAnimationFrame(this.animationLoop.bind(this));
-        }        animateWave() {
+        }
+
+        animateWave() {
+            if (!this.isVisible || !this.isAnimating) return;
+
             const DURATION_RANGE = [3000, 5000];
             const changeDuration = Math.floor(Math.random() * (DURATION_RANGE[1] - DURATION_RANGE[0] + 1) + DURATION_RANGE[0]);
             const newPath = generateRandomWave(this.NUMBER_OF_POINTS, this.MINIMUM_FREQUENCY, this.MAXIMUM_FREQUENCY, Number(this.dataset.canvasheight), this.ctx?.canvas.width || 1000);
 
             const interpolatePaths = interpolate(this.currentPath, newPath, { maxSegmentLength: 10 });
-            
-            // Store animation start time and duration for custom animation
+
             const startTime = performance.now();
-            const durationMs = changeDuration / 1000 * 1000; // Convert to milliseconds
-            
-            // Create custom animation frame using requestAnimationFrame instead of the motion library
+            const durationMs = changeDuration;
+
             const animateFrame = (timestamp: number) => {
-                if (!this.ctx) return;
-                
+                if (!this.ctx || !this.isVisible || !this.isAnimating) {
+                    this.waveAnimationFrameId = null;
+                    return;
+                }
+
                 const elapsed = timestamp - startTime;
                 const progress = Math.min(elapsed / durationMs, 1);
-                
+
+                // Clear and redraw
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 const path = interpolatePaths(progress);
                 this.drawPath(path);
-                
+
                 if (progress < 1) {
-                    requestAnimationFrame(animateFrame);
+                    this.waveAnimationFrameId = requestAnimationFrame(animateFrame);
+                } else {
+                    this.waveAnimationFrameId = null;
                 }
             };
-            
-            // Start the animation
-            requestAnimationFrame(animateFrame);
+
+            // Cancel any existing wave animation before starting new one
+            if (this.waveAnimationFrameId) {
+                cancelAnimationFrame(this.waveAnimationFrameId);
+            }
+
+            this.waveAnimationFrameId = requestAnimationFrame(animateFrame);
 
             this.currentPath = newPath;
             this.DURATION = changeDuration;
@@ -224,29 +301,28 @@ if (height === 'small') {
                 this.ctx.stroke(path);
                 this.ctx.restore();
             }
-        }        disconnectedCallback() {
-            if (this.animationFrameId) {
-                cancelAnimationFrame(this.animationFrameId);
-                this.animationFrameId = null;
-            }
         }
 
-        // trigger a link click
+        disconnectedCallback() {
+            // Clean up observer
+            if (this.observer) {
+                this.observer.disconnect();
+                this.observer = null;
+            }
+
+            // Clean up animations
+            this.stopAnimation();
+        }
+
         handleClick() {
             const link = this.getAttribute('href');
             if (link) {
-                window.location.href
-                    = link;
+                window.location.href = link;
             }
         }
     }
-    // Register the custom element
-    if (!customElements.get('non-experience-card')) {
+
+        // Register the custom element
         customElements.define('non-experience-card', NonExperienceCard);
     }
-    // // Add event listener for click
-    // const nonExperienceCard = document.querySelector('non-experience-card');
-    // if (nonExperienceCard) {
-    //     nonExperienceCard.addEventListener('click', nonExperienceCard.handleClick.bind(nonExperienceCard));
-    // }
 </script>

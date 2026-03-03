@@ -11,51 +11,127 @@ if (height == 'small'){
     svgHeight = 150;
 }
 ---
-<script> 
+<script>
     import { animate } from "motion";
     import { interpolate } from "flubber";
     import { generateRandomWave } from './waves'
 
-    class ExperienceCard extends HTMLElement {
-        delayValue:number = 0;
-        NUMBER_OF_POINTS:number = 10;
-        MINIMUM_FREQUENCY:number = 10;
-        MAXIMUM_FREQUENCY:number = 30;
-        constructor(){
+    if (!customElements.get('experience-card')) {
+        class ExperienceCard extends HTMLElement {
+        delayValue: number = 0;
+        NUMBER_OF_POINTS: number = 10;
+        MINIMUM_FREQUENCY: number = 10;
+        MAXIMUM_FREQUENCY: number = 30;
+        interval: number | null = null;
+        observer: IntersectionObserver | null = null;
+        isVisible: boolean = false;
+        prefersReducedMotion: boolean = false;
+        path: SVGPathElement | null = null;
+        DURATION: number = 0;
+        DURATION_RANGE: number[] = [3000, 5000];
+
+        constructor() {
             super();
-            if (window.innerWidth < 500){
+
+            // Check for reduced motion preference
+            this.prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (window.innerWidth < 500) {
                 this.dataset.svgheight = "80";
             }
-            console.log("this.dataset.",this.dataset,this.dataset.svgheight);
-            const initalWave = generateRandomWave(this.NUMBER_OF_POINTS,this.MINIMUM_FREQUENCY,this.MAXIMUM_FREQUENCY,Number(this.dataset.svgheight));
-            const path = this.querySelector("path");
-            let DURATION_RANGE = [3000,5000];
-            var DURATION = Math.floor(Math.random() * (DURATION_RANGE[1] - DURATION_RANGE[0] + 1) + DURATION_RANGE[0]);
-            var changeDuration = DURATION;
-            const animateWave = ()=>{
-                changeDuration = Math.floor(Math.random() * (DURATION_RANGE[1] - DURATION_RANGE[0] + 1) + DURATION_RANGE[0]);
-                if (path){
-                    const currentPath = path.getAttribute("d");
-                    path?.setAttribute('d',initalWave)
-                    if (currentPath){
-                        let randomWave = generateRandomWave(this.NUMBER_OF_POINTS,this.MINIMUM_FREQUENCY,this.MAXIMUM_FREQUENCY,Number(this.dataset.svgheight))
-                        let mixPaths = interpolate(currentPath, randomWave);
-                        animate((progress) => path.setAttribute("d", mixPaths(progress)), {duration: DURATION/1000});
-                    }
-                    if(interval && changeDuration !== DURATION){
-                        DURATION = changeDuration;
-                        clearInterval(interval)
-                        interval = setInterval(animateWave,DURATION)
-                    }
-                }
+
+            this.path = this.querySelector("path");
+            this.DURATION = Math.floor(Math.random() * (this.DURATION_RANGE[1] - this.DURATION_RANGE[0] + 1) + this.DURATION_RANGE[0]);
+
+            const initalWave = generateRandomWave(this.NUMBER_OF_POINTS, this.MINIMUM_FREQUENCY, this.MAXIMUM_FREQUENCY, Number(this.dataset.svgheight));
+            if (this.path) {
+                this.path.setAttribute('d', initalWave);
             }
-            var interval = setInterval(animateWave,1000);
-            this.delayValue = Math.floor(Math.random() * (3000 - 0 + 1) + 0);
-            this.querySelector("h4")!.setAttribute('style',`animation-delay:${this.delayValue}ms`);
-            this.querySelector("svg")!.style.setProperty('--svg-height',this.dataset.svgheight!);
+
+            this.delayValue = Math.floor(Math.random() * 3001);
+            this.querySelector("h4")!.setAttribute('style', `animation-delay:${this.delayValue}ms`);
+            this.querySelector("svg")!.style.setProperty('--svg-height', this.dataset.svgheight!);
+        }
+
+        connectedCallback() {
+            this.setupIntersectionObserver();
+        }
+
+        setupIntersectionObserver() {
+            const options = {
+                root: null,
+                rootMargin: '100px',
+                threshold: 0.1
+            };
+
+            this.observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    this.isVisible = entry.isIntersecting;
+
+                    if (entry.isIntersecting && !this.prefersReducedMotion) {
+                        // Card is visible, start animation
+                        this.startAnimation();
+                    } else {
+                        // Card is not visible, stop animation
+                        this.stopAnimation();
+                    }
+                });
+            }, options);
+
+            this.observer.observe(this);
+        }
+
+        startAnimation() {
+            if (this.interval) return; // Already running
+
+            this.interval = window.setInterval(() => this.animateWave(), this.DURATION);
+        }
+
+        stopAnimation() {
+            if (this.interval) {
+                clearInterval(this.interval);
+                this.interval = null;
+            }
+        }
+
+        animateWave() {
+            if (!this.isVisible || !this.path) return;
+
+            const changeDuration = Math.floor(Math.random() * (this.DURATION_RANGE[1] - this.DURATION_RANGE[0] + 1) + this.DURATION_RANGE[0]);
+            const currentPath = this.path.getAttribute("d");
+
+            if (currentPath) {
+                const randomWave = generateRandomWave(this.NUMBER_OF_POINTS, this.MINIMUM_FREQUENCY, this.MAXIMUM_FREQUENCY, Number(this.dataset.svgheight));
+                const mixPaths = interpolate(currentPath, randomWave);
+
+                animate((progress) => {
+                    if (this.path && this.isVisible) {
+                        this.path.setAttribute("d", mixPaths(progress));
+                    }
+                }, { duration: this.DURATION / 1000 });
+            }
+
+            if (changeDuration !== this.DURATION) {
+                this.DURATION = changeDuration;
+                this.stopAnimation();
+                this.startAnimation();
+            }
+        }
+
+        disconnectedCallback() {
+            // Clean up observer
+            if (this.observer) {
+                this.observer.disconnect();
+                this.observer = null;
+            }
+
+            // Clean up interval
+            this.stopAnimation();
         }
     }
-    customElements.define('experience-card', ExperienceCard);
+
+        customElements.define('experience-card', ExperienceCard);
+    }
 </script>
 <style lang="scss">
     experience-card.experience{

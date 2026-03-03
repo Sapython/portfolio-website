@@ -2,13 +2,15 @@
 const { projectName, description, techIcons } = Astro.props;
 ---
 <script lang="ts">
-    class ProjectCard extends HTMLElement{
-        constructor(){
-            super();
+    if (!customElements.get('project-card')) {
+        class ProjectCard extends HTMLElement{
+            constructor(){
+                super();
+            }
         }
-    }
 
-    customElements.define('project-card', ProjectCard);
+        customElements.define('project-card', ProjectCard);
+    }
 </script>
 <style lang="scss">
     .cascadiyaFont{
