@@ -1,0 +1,25 @@
+---
+import { getAllProjectSlugs, getProjectBySlug } from '../../data/projects';
+import ProjectDetail from '../../layouts/ProjectDetail.astro';
+
+export const prerender = true;
+
+export function getStaticPaths() {
+    const slugs = getAllProjectSlugs();
+    return slugs.map((slug) => {
+        const project = getProjectBySlug(slug);
+        return {
+            params: { slug },
+            props: project,
+        };
+    });
+}
+
+const project = Astro.props;
+
+if (!project) {
+    return Astro.redirect('/404');
+}
+---
+
+<ProjectDetail {...project} />

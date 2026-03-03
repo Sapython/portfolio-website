@@ -1,0 +1,61 @@
+---
+import type { ProjectData } from '../../data/projects';
+
+interface Props extends ProjectData {}
+
+const { title, subtitle, description, techStack, timeline, role, company, slug } = Astro.props;
+
+const projectSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": title,
+    "description": description,
+    "author": {
+        "@type": "Person",
+        "name": "Kumar Saptam",
+        "url": "https://sapython.me"
+    },
+    "dateCreated": timeline?.split(' - ')[0],
+    "dateModified": timeline?.split(' - ')[1],
+    "keywords": techStack?.join(', '),
+    "url": `https://sapython.me/project/${slug}`,
+    "headline": subtitle,
+    "creator": {
+        "@type": "Person",
+        "name": "Kumar Saptam",
+        "jobTitle": role
+    },
+    "publisher": company ? {
+        "@type": "Organization",
+        "name": company
+    } : undefined
+};
+
+const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://sapython.me"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Projects",
+            "item": "https://sapython.me/#projects"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": title,
+            "item": `https://sapython.me/project/${slug}`
+        }
+    ]
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(projectSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

@@ -10,20 +10,37 @@ const  { links } = Astro.props;
 ---
 
 <style lang="scss">
-    .icons{
+    $primary: #BB7A4F;
+    $contrast: #161616;
+
+    .icons {
         display: flex;
-        gap:7px;
-        a{
-            width: 25px;
-            height: 25px;
-            background: #565656;
+        gap: 8px;
+
+        a {
+            width: 32px;
+            height: 32px;
+            background: rgba($primary, 0.1);
             display: grid;
             place-items: center;
-            border-radius: 5px;
+            border-radius: 6px;
             text-decoration: none;
-            i{
-                font-size: 20px;
-                color:var(--primary-color)
+            transition: all 0.3s ease;
+            border: 1px solid rgba($primary, 0.2);
+
+            i {
+                font-size: 16px;
+                color: $primary;
+                transition: transform 0.3s ease;
+            }
+
+            &:hover {
+                background: rgba($primary, 0.2);
+                transform: translateY(-2px);
+
+                i {
+                    transform: scale(1.1);
+                }
             }
         }
     }

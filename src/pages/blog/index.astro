@@ -1,105 +1,1012 @@
 ---
 import { getCollection } from "astro:content"
-import LastRead from '../../components/blog/LastRead.astro'
+import Layout from "../../layouts/Layout.astro";
 import PostCard from '../../components/blog/PostCard.astro'
 
-const posts = await getCollection("posts")
-let tags = await getCollection("tags")
-tags = tags.sort((a,b)=>a.data.sortOrder-b.data.sortOrder);
-// console.log(tags);
-const nextUpdateDay = (new Date()).getDay()
-const highlightedPosts = posts.filter(post=>post.data.featured).filter((post,i)=>i<3)
-const tagWisePosts = tags.map(tag=>({
-    tag:tag.data,
-    posts:posts.filter(post=>post.data.tags.find(t=>t.slug===tag.slug)).map((post)=>{
-        return {
-            ...post,
-            data:{
-                ...post.data,
-                tags:post.data.tags.filter(t=>t.slug===tag.slug) as any
-            }
-        }
-    })
-}))
-console.log(tagWisePosts);
+const posts = await getCollection("posts");
+const tags = await getCollection("tags");
+
+type ResolvedTag = {
+    slug: string;
+    title: string;
+    description: string;
+    createdDate: Date;
+    sortOrder: number;
+};
+
+// Sort posts by date (newest first)
+const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Get top 6 posts for bento grid
+const topPosts = sortedPosts.slice(0, 6);
+
+// Get remaining posts for masonry layout
+const remainingPosts = sortedPosts.slice(6);
+
+// Get all unique tags for filters
+const allTags = tags.sort((a, b) => a.data.sortOrder - b.data.sortOrder);
+const tagLookup = new Map<string, (typeof allTags)[number]>(allTags.map((tag) => [tag.slug, tag]));
+
+const resolvePostTags = (postTags: Array<{ slug: string }>): ResolvedTag[] => {
+    return postTags
+        .map((tagReference) => tagLookup.get(tagReference.slug))
+        .filter((tag): tag is (typeof allTags)[number] => Boolean(tag))
+        .map((tag) => ({
+            slug: tag.slug,
+            title: tag.data.title,
+            description: tag.data.description,
+            createdDate: tag.data.createdDate,
+            sortOrder: tag.data.sortOrder
+        }));
+};
 ---
 
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
-        <title>Blog</title>
-        <script>
-            import MiniMasonry from "minimasonry";
-            var masonry = new MiniMasonry({
-                container: 'section#posts',
-                gutterX:60,
-                gutterY:30
-            });
-        </script>
-        <style lang="scss">
-            @import 'remixicon/fonts/remixicon.css';
-            @import url('/fonts/_rusty_cage_font.scss');
-            @import url('/fonts/_cascadiya_code_font.scss');
-            @import url("/styles/global.scss");
-            section{
-                .post{
-                    position: absolute;
-                    padding: 20px;
-                    border: 1px solid black;
-                    a{
-                        // button
-                        display: inline-block;
-                        padding: 10px;
-                        background-color: black;
-                        color: white;
-                        text-decoration: none;
-                        &:hover{
-                            background-color: white;
-                            color: black;
-                            border: 1px solid black;
+<style lang="scss">
+    $primary: #BB7A4F;
+    $contrast: #161616;
+
+    .blogPage {
+        background: var(--background-color);
+        min-height: 100vh;
+        padding-inline: 120px;
+        padding-block: 60px;
+
+        .pageHeader {
+            margin-bottom: 50px;
+
+            h1 {
+                font-family: 'RustyCage';
+                font-weight: 500;
+                font-size: 60px;
+                color: $primary;
+                margin: 0 0 15px 0;
+            }
+
+            p {
+                font-family: 'CascadiyaCode';
+                color: #7a7d7d;
+                font-size: 16px;
+                margin: 0 0 30px 0;
+            }
+
+            .controls {
+                display: grid;
+                grid-template-columns: minmax(260px, 1fr) auto;
+                gap: 16px 20px;
+                align-items: start;
+
+                .searchBox {
+                    width: 100%;
+                    max-width: 500px;
+                    position: relative;
+
+                    input {
+                        font-family: 'CascadiyaCode';
+                        background: $contrast;
+                        border: 2px solid rgba($primary, 0.2);
+                        border-radius: 10px;
+                        padding: 12px 16px 12px 45px;
+                        color: #fff;
+                        font-size: 14px;
+                        width: 100%;
+                        transition: all 0.3s ease;
+                        box-shadow: inset 0 3px 10px #47372D;
+
+                        &::placeholder {
+                            color: #5a5d5d;
+                        }
+
+                        &:focus {
+                            outline: none;
+                            border-color: $primary;
+                            box-shadow: inset 0 3px 10px #47372D, 0 0 0 3px rgba($primary, 0.1);
+                        }
+                    }
+
+                    i {
+                        position: absolute;
+                        left: 16px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: $primary;
+                        font-size: 18px;
+                    }
+                }
+
+                .filterGroup {
+                    display: flex;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                    justify-self: end;
+
+                    .customSort {
+                        position: relative;
+                        min-width: 200px;
+                    }
+
+                    .sortTrigger {
+                        font-family: 'CascadiyaCode';
+                        background: $contrast;
+                        border: 2px solid rgba($primary, 0.2);
+                        border-radius: 10px;
+                        padding: 12px 16px;
+                        min-width: 200px;
+                        color: #fff;
+                        font-size: 14px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: inset 0 3px 10px #47372D;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 10px;
+                        width: 100%;
+
+                        &:focus {
+                            outline: none;
+                            border-color: $primary;
+                        }
+
+                        i {
+                            color: $primary;
+                            font-size: 18px;
+                            transition: transform 0.2s ease;
+                        }
+                    }
+
+                    .customSort.open .sortTrigger i {
+                        transform: rotate(180deg);
+                    }
+
+                    .sortMenu {
+                        position: absolute;
+                        top: calc(100% + 8px);
+                        left: 0;
+                        width: 100%;
+                        background: $contrast;
+                        border: 2px solid rgba($primary, 0.2);
+                        border-radius: 10px;
+                        box-shadow: inset 0 3px 10px #47372D, 0 12px 24px rgba(#000000, 0.35);
+                        overflow: hidden;
+                        display: none;
+                        z-index: 15;
+                    }
+
+                    .customSort.open .sortMenu {
+                        display: block;
+                    }
+
+                    .sortOption {
+                        font-family: 'CascadiyaCode';
+                        color: #fff;
+                        font-size: 14px;
+                        padding: 12px 14px;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        &:hover {
+                            background: rgba($primary, 0.15);
+                        }
+
+                        &.active {
+                            background: rgba($primary, 0.2);
+                            color: $primary;
+                        }
+                    }
+
+                    .sortInput {
+                        position: absolute;
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+                }
+
+                .tagFilters {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                    grid-column: 1 / -1;
+
+                    button {
+                        font-family: 'CascadiyaCode';
+                        background: rgba($primary, 0.1);
+                        color: $primary;
+                        padding: 8px 14px;
+                        border-radius: 8px;
+                        font-size: 13px;
+                        border: 1px solid rgba($primary, 0.2);
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+
+                        &:hover {
+                            background: rgba($primary, 0.2);
+                            transform: translateY(-2px);
+                        }
+
+                        &.active {
+                            background: $primary;
+                            color: $contrast;
+                            border-color: $primary;
+                            box-shadow: 0 2px 0 darken($primary, 15%);
                         }
                     }
                 }
             }
-        </style>
-    </head>
-    <body>
-        <section class="header">
-            <h1>Random Dude's BLOG</h1>
-            <div class="update">
-                <p>Updated every 3 days</p>
-                <p>Next Update: {nextUpdateDay}</p>
-            </div>
-        </section>
-        <hr>
-        <section class="highlights">
-            <h2>Highlights</h2>
-            <div class="grid">
-                {highlightedPosts.map(post=>
-                    (<div class="post">
-                        
-                        <h2>{post.data.title}</h2>
-                        <p>{post.data.description}</p>
-                        <a href={`/blog/${post.slug}`}>Read More</a>
-                    </div>)
-                )}
-                <LastRead/>
-            </div>
-        </section>
-        {tagWisePosts.map(tag=>{
-            return (
-                <section class="tag">
-                    <h2>{tag.tag.title}</h2>
-                    <div class="grid">
-                        {tag.posts.map(post=>
-                            (<PostCard date={post.data.date} decription={post.data.description} links={post.data.social} slug={post.slug} tags={post.data.tags} title={post.data.title} />)
-                        )}
-                    </div>
-                </section>
-            )
-        })}
+        }
 
-    </body>
-</html>
+        .bentoHero {
+            margin-bottom: 70px;
+
+            .bentoGrid {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 15px;
+
+                .bentoCard:nth-child(1) {
+                    grid-column: span 8;
+                    grid-row: span 2;
+                    border-radius: 50px 0px 0px 0px;
+                }
+                .bentoCard:nth-child(2) {
+                    grid-column: span 8;
+                    grid-row: span 2;
+                    border-radius: 0px 50px 0px 0px;
+                }
+                .bentoCard:nth-child(4) {
+                    grid-column: span 8;
+                    grid-row: span 2;
+                    border-radius: 0px 0px 0px 50px;
+                }
+                .bentoCard:nth-child(6) {
+                    grid-column: span 8;
+                    grid-row: span 2;
+                    border-radius: 0px 0px 50px 0px;
+                }
+
+                .bentoCard {
+                    background: $contrast;
+                    box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 35%);
+                    padding: 30px;
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    gap: 15px;
+                    text-decoration: none;
+                    overflow: hidden;
+
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        top: -2px;
+                        left: -2px;
+                        right: -2px;
+                        bottom: -2px;
+                        background: linear-gradient(135deg, $primary 0%, transparent 50%);
+                        border-radius: inherit;
+                        opacity: 0;
+                        transition: opacity 0.4s ease;
+                        z-index: 0;
+                        pointer-events: none;
+                    }
+
+                    &:hover {
+                        transform: translateY(-8px) scale(1.02);
+                        box-shadow: inset 0 3px 15px #47372D, 0 30px 60px rgba(#000000, 45%);
+
+                        &::before {
+                            opacity: 0.12;
+                        }
+
+                        .readMore {
+                            transform: translateY(-1px);
+                            box-shadow: 0 3px 0 darken($primary, 15%),
+                                        0 4px 10px rgba(#000000, 0.35);
+                        }
+                    }
+
+                    > * {
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    &.large {
+                        grid-column: span 8;
+                        grid-row: span 2;
+                        // border-radius: 50px 10px 50px 10px;
+
+                        .content h2 {
+                            font-size: 28px;
+                        }
+
+                        .meta {
+                            font-size: 14px;
+                        }
+
+                        p {
+                            font-size: 15px;
+                        }
+                    }
+
+                    &.medium {
+                        grid-column: span 4;
+                        grid-row: span 1;
+                        // border-radius: 25px 10px 25px 10px;
+                    }
+
+                    .content {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+
+                        .meta {
+                            font-family: 'CascadiyaCode';
+                            color: #7a7d7d;
+                            font-size: 12px;
+                            display: flex;
+                            gap: 15px;
+                            align-items: center;
+
+                            .date, .readTime {
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+
+                                i {
+                                    color: $primary;
+                                    font-size: 14px;
+                                }
+                            }
+                        }
+
+                        h2 {
+                            font-family: 'CascadiyaCode';
+                            color: $primary;
+                            font-size: 20px;
+                            font-weight: 700;
+                            margin: 0;
+                            line-height: 1.3;
+                        }
+
+                        .tags {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 6px;
+
+                            span {
+                                font-family: 'CascadiyaCode';
+                                background: rgba($primary, 0.1);
+                                color: $primary;
+                                padding: 4px 10px;
+                                border-radius: 4px;
+                                font-size: 11px;
+                                border: 1px solid rgba($primary, 0.2);
+                            }
+                        }
+
+                        p {
+                            font-family: 'CascadiyaCode';
+                            color: #7a7d7d;
+                            font-size: 13px;
+                            line-height: 1.6;
+                            margin: 0;
+                        }
+                    }
+
+                    .readMore {
+                        font-family: 'CascadiyaCode';
+                        background: $primary;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        color: $contrast;
+                        font-weight: 500;
+                        font-size: 13px;
+                        width: fit-content;
+                        box-shadow: 0 2px 0 darken($primary, 15%),
+                                    0 3px 8px rgba(#000000, 0.3);
+                        transition: all 0.2s ease;
+
+                        &:active {
+                            transform: translateY(1px);
+                            box-shadow: 0 1px 0 darken($primary, 15%),
+                                        0 2px 4px rgba(#000000, 0.25);
+                        }
+                    }
+                }
+
+                @media screen and (max-width: 1200px) {
+                    grid-template-columns: repeat(8, 1fr);
+
+                    .bentoCard.large {
+                        grid-column: span 8;
+                    }
+
+                    .bentoCard.medium {
+                        grid-column: span 4;
+                    }
+                }
+
+                @media screen and (max-width: 850px) {
+                    grid-template-columns: repeat(4, 1fr);
+
+                    .bentoCard.large,
+                    .bentoCard.medium {
+                        grid-column: span 4;
+                        grid-row: span 1;
+                    }
+                }
+            }
+        }
+
+        .masonrySection {
+            h2 {
+                font-family: 'CascadiyaCode';
+                color: $primary;
+                font-size: 28px;
+                font-weight: 700;
+                margin: 0 0 30px 0;
+                padding-bottom: 15px;
+                border-bottom: 2px solid rgba($primary, 0.2);
+            }
+
+            .resultCount {
+                font-family: 'CascadiyaCode';
+                color: #7a7d7d;
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+
+            .masonryGrid {
+                column-count: 3;
+                column-gap: 30px;
+
+                &.hidden {
+                    display: none;
+                }
+
+                .postCard {
+                    break-inside: avoid;
+                    margin-bottom: 30px;
+                    display: block;
+                }
+            }
+
+            .pagination {
+                margin-top: 8px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+
+                &.visible {
+                    display: flex;
+                }
+
+                button {
+                    font-family: 'CascadiyaCode';
+                    background: $primary;
+                    border: none;
+                    padding: 8px 14px;
+                    border-radius: 6px;
+                    color: $contrast;
+                    font-weight: 500;
+                    font-size: 13px;
+                    cursor: pointer;
+                    box-shadow: 0 2px 0 darken($primary, 15%),
+                                0 3px 8px rgba(#000000, 0.3);
+                    transition: all 0.2s ease;
+
+                    &:disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed;
+                        box-shadow: none;
+                    }
+
+                    &:not(:disabled):active {
+                        transform: translateY(1px);
+                        box-shadow: 0 1px 0 darken($primary, 15%),
+                                    0 2px 4px rgba(#000000, 0.25);
+                    }
+                }
+
+                .pageInfo {
+                    font-family: 'CascadiyaCode';
+                    color: #7a7d7d;
+                    font-size: 13px;
+                }
+            }
+
+            .noResults {
+                text-align: center;
+                padding: 60px 20px;
+                display: none;
+
+                &.visible {
+                    display: block;
+                }
+
+                i {
+                    font-size: 64px;
+                    color: rgba($primary, 0.3);
+                    margin-bottom: 20px;
+                }
+
+                h3 {
+                    font-family: 'CascadiyaCode';
+                    color: $primary;
+                    font-size: 22px;
+                    margin: 0 0 10px 0;
+                }
+
+                p {
+                    font-family: 'CascadiyaCode';
+                    color: #7a7d7d;
+                    font-size: 14px;
+                }
+            }
+        }
+
+        @media screen and (max-width: 1600px) {
+            padding-inline: 80px;
+        }
+
+        @media screen and (max-width: 850px) {
+            padding-inline: 80px;
+            padding-block: 40px;
+
+            .pageHeader {
+                h1 {
+                    font-size: 48px;
+                }
+
+                .controls {
+                    grid-template-columns: 1fr;
+
+                    .searchBox {
+                        max-width: 100%;
+                    }
+
+                    .filterGroup {
+                        justify-self: stretch;
+
+                        .customSort {
+                            width: 100%;
+                        }
+                    }
+                }
+            }
+
+            .masonrySection .masonryGrid {
+                column-count: 2;
+                column-gap: 25px;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            padding-inline: 40px;
+
+            .masonrySection .masonryGrid {
+                column-count: 1;
+                column-gap: 0;
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            padding-inline: 20px;
+            padding-block: 30px;
+
+            .pageHeader {
+                h1 {
+                    font-size: 40px;
+                }
+
+                p {
+                    font-size: 14px;
+                }
+            }
+
+            .bentoHero .bentoGrid .bentoCard {
+                padding: 20px;
+
+                &.large .content h2 {
+                    font-size: 22px;
+                }
+
+                .content h2 {
+                    font-size: 16px;
+                }
+
+                .content p {
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+</style>
+
+<Layout title="Blog - Kumar Saptam">
+    <div class="blogPage">
+        <div class="pageHeader">
+            <h1>Blog</h1>
+            <p>Insights on software engineering, full-stack development, and tech</p>
+
+            <div class="controls">
+                <div class="searchBox">
+                    <i class="ri-search-line"></i>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search articles..."
+                    />
+                </div>
+
+                <div class="filterGroup">
+                    <div class="customSort" id="customSort">
+                        <button type="button" class="sortTrigger" id="sortTrigger" aria-haspopup="listbox" aria-expanded="false">
+                            <span id="sortLabel">Newest First</span>
+                            <i class="ri-arrow-down-s-line"></i>
+                        </button>
+                        <div class="sortMenu" id="sortMenu" role="listbox" aria-label="Sort posts">
+                            <div class="sortOption active" role="option" data-value="newest" aria-selected="true">Newest First</div>
+                            <div class="sortOption" role="option" data-value="oldest" aria-selected="false">Oldest First</div>
+                            <div class="sortOption" role="option" data-value="title" aria-selected="false">Title A-Z</div>
+                        </div>
+                        <input type="hidden" id="sortSelect" class="sortInput" value="newest" />
+                    </div>
+                </div>
+
+                <div class="tagFilters">
+                    <button class="tagFilter active" data-tag="all">All</button>
+                    {allTags.map(tag => (
+                        <button class="tagFilter" data-tag={tag.slug}>
+                            {tag.data.title}
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+        <section class="bentoHero">
+            <div class="bentoGrid">
+                {topPosts.map((post, index) => {
+                    const isLarge = index === 0;
+                    const readingTime = Math.ceil(post.body.split(/\s+/).length / 200);
+                    const resolvedTags = resolvePostTags(post.data.tags);
+                    const formattedDate = post.data.date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+
+                    return (
+                        <a
+                            href={`/blog/${post.slug}`}
+                            class={`bentoCard ${isLarge ? 'large' : 'medium'}`}
+                            data-date={post.data.date.getTime()}
+                            data-title={post.data.title.toLowerCase()}
+                            data-tags={post.data.tags.map((t: any) => t.slug).join(',')}
+                            data-slug={post.slug}
+                        >
+                            <div class="content">
+                                <div class="meta">
+                                    <span class="date">
+                                        <i class="ri-calendar-line"></i>
+                                        {formattedDate}
+                                    </span>
+                                    <span class="readTime">
+                                        <i class="ri-time-line"></i>
+                                        {readingTime} min
+                                    </span>
+                                </div>
+                                <h2>{post.data.title}</h2>
+                                <div class="tags">
+                                    {resolvedTags.slice(0, 3).map((tag) => (
+                                        <span>{tag.title}</span>
+                                    ))}
+                                </div>
+                                <p>{post.data.description}</p>
+                            </div>
+                            <div class="readMore">Read Article</div>
+                        </a>
+                    );
+                })}
+            </div>
+        </section>
+
+        {remainingPosts.length > 0 && (
+            <section class="masonrySection">
+                <h2>More Articles</h2>
+                <div class="resultCount" id="resultCount">
+                    Showing {remainingPosts.length} articles
+                </div>
+                <div class="masonryGrid" id="masonryGrid">
+                    {remainingPosts.map(post => (
+                        <div
+                            class="postCard"
+                            data-date={post.data.date.getTime()}
+                            data-title={post.data.title.toLowerCase()}
+                            data-tags={post.data.tags.map((t: any) => t.slug).join(',')}
+                            data-slug={post.slug}
+                        >
+                            <PostCard
+                                date={post.data.date}
+                                decription={post.data.description}
+                                links={post.data.social}
+                                slug={post.slug}
+                                tags={resolvePostTags(post.data.tags)}
+                                title={post.data.title}
+                            />
+                        </div>
+                    ))}
+                </div>
+                <div class="pagination" id="pagination">
+                    <button id="prevPage" type="button">Previous</button>
+                    <span class="pageInfo" id="pageInfo">Page 1 of 1</span>
+                    <button id="nextPage" type="button">Next</button>
+                </div>
+                <div class="noResults" id="noResults">
+                    <i class="ri-search-line"></i>
+                    <h3>No articles found</h3>
+                    <p>Try adjusting your filters or search query</p>
+                </div>
+            </section>
+        )}
+    </div>
+</Layout>
+
+<script>
+    // Search, filter, and sort functionality
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    const sortSelect = document.getElementById('sortSelect') as HTMLInputElement;
+    const customSort = document.getElementById('customSort');
+    const sortTrigger = document.getElementById('sortTrigger') as HTMLButtonElement;
+    const sortLabel = document.getElementById('sortLabel');
+    const sortMenu = document.getElementById('sortMenu');
+    const sortOptions = document.querySelectorAll('.sortOption');
+    const tagFilters = document.querySelectorAll('.tagFilter');
+    const masonryGrid = document.getElementById('masonryGrid');
+    const bentoCards = document.querySelectorAll('.bentoCard');
+    const postCards = document.querySelectorAll('.postCard');
+    const resultCount = document.getElementById('resultCount');
+    const noResults = document.getElementById('noResults');
+    const pagination = document.getElementById('pagination');
+    const prevPage = document.getElementById('prevPage') as HTMLButtonElement;
+    const nextPage = document.getElementById('nextPage') as HTMLButtonElement;
+    const pageInfo = document.getElementById('pageInfo');
+
+    let currentTag = 'all';
+    let currentSearch = '';
+    let currentSort = 'newest';
+    let currentPage = 1;
+    const pageSize = 6;
+    let searchResults: any[] = [];
+    let isSearchActive = false;
+
+    function filterAndSort() {
+        let visibleCount = 0;
+
+        // Filter bento cards
+        bentoCards.forEach((card) => {
+            const cardElement = card as HTMLElement;
+            const cardSlug = cardElement.dataset.slug || '';
+            const tags = cardElement.dataset.tags?.split(',') || [];
+
+            let matchesSearch = true;
+            if (isSearchActive && currentSearch.trim() !== '') {
+                matchesSearch = searchResults.some((result: any) =>
+                    cardSlug === result.slug
+                );
+            }
+            const matchesTag = currentTag === 'all' || tags.includes(currentTag);
+
+            if (matchesSearch && matchesTag) {
+                cardElement.style.display = '';
+                visibleCount++;
+            } else {
+                cardElement.style.display = 'none';
+            }
+        });
+
+        // Filter masonry cards
+        const cards = Array.from(postCards);
+        let filteredCards = cards.filter((card) => {
+            const cardElement = card as HTMLElement;
+            const cardSlug = cardElement.dataset.slug || '';
+            const tags = cardElement.dataset.tags?.split(',') || [];
+
+            let matchesSearch = true;
+            if (isSearchActive && currentSearch.trim() !== '') {
+                matchesSearch = searchResults.some((result: any) =>
+                    cardSlug === result.slug
+                );
+            }
+            const matchesTag = currentTag === 'all' || tags.includes(currentTag);
+
+            return matchesSearch && matchesTag;
+        });
+
+        // Sort filtered cards
+        filteredCards.sort((a, b) => {
+            const aElement = a as HTMLElement;
+            const bElement = b as HTMLElement;
+
+            if (currentSort === 'newest') {
+                return Number(bElement.dataset.date) - Number(aElement.dataset.date);
+            } else if (currentSort === 'oldest') {
+                return Number(aElement.dataset.date) - Number(bElement.dataset.date);
+            } else if (currentSort === 'title') {
+                return (aElement.dataset.title || '').localeCompare(bElement.dataset.title || '');
+            }
+            return 0;
+        });
+
+        // Hide all cards first
+        postCards.forEach(card => {
+            (card as HTMLElement).style.display = 'none';
+        });
+
+        const totalMasonryPages = Math.max(1, Math.ceil(filteredCards.length / pageSize));
+        currentPage = Math.min(currentPage, totalMasonryPages);
+        const startIndex = (currentPage - 1) * pageSize;
+        const paginatedCards = filteredCards.slice(startIndex, startIndex + pageSize);
+
+        // Show filtered, sorted and paginated cards
+        paginatedCards.forEach(card => {
+            (card as HTMLElement).style.display = '';
+            visibleCount++;
+        });
+
+        // Append cards in sorted order
+        if (masonryGrid) {
+            paginatedCards.forEach(card => {
+                masonryGrid.appendChild(card);
+            });
+        }
+
+        // Update result count and show/hide no results message
+        if (resultCount) {
+            const totalVisible = visibleCount;
+            resultCount.textContent = `Showing ${totalVisible} of ${bentoCards.length + filteredCards.length} article${bentoCards.length + filteredCards.length !== 1 ? 's' : ''}`;
+        }
+
+        if (pagination && prevPage && nextPage && pageInfo) {
+            const hasResults = filteredCards.length > 0;
+            const shouldShow = hasResults && totalMasonryPages > 1;
+
+            pagination.classList.toggle('visible', shouldShow);
+            prevPage.disabled = currentPage <= 1;
+            nextPage.disabled = currentPage >= totalMasonryPages;
+            pageInfo.textContent = `Page ${currentPage} of ${totalMasonryPages}`;
+        }
+
+        if (noResults && masonryGrid) {
+            if (visibleCount === 0) {
+                noResults.classList.add('visible');
+                masonryGrid.classList.add('hidden');
+            } else {
+                noResults.classList.remove('visible');
+                masonryGrid.classList.remove('hidden');
+            }
+        }
+    }
+
+    // Debounce function for search
+    let searchTimeout: ReturnType<typeof setTimeout>;
+    async function performSearch(query: string) {
+        if (query.trim() === '') {
+            isSearchActive = false;
+            searchResults = [];
+            filterAndSort();
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+
+            if (!response.ok) {
+                console.error('Search request failed:', response.statusText);
+                return;
+            }
+
+            const data = await response.json();
+
+            if (data.results) {
+                searchResults = data.results;
+                isSearchActive = true;
+                filterAndSort();
+            }
+        } catch (err) {
+            console.error('Search failed:', err);
+        }
+    }
+
+    // Search input handler with debouncing
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = (e.target as HTMLInputElement).value;
+            currentPage = 1;
+
+            // Clear previous timeout
+            clearTimeout(searchTimeout);
+
+            // Debounce search by 300ms
+            searchTimeout = setTimeout(() => {
+                performSearch(currentSearch);
+            }, 300);
+        });
+    }
+
+    // Custom sort dropdown handlers
+    if (customSort && sortTrigger && sortMenu && sortLabel && sortSelect) {
+        const closeSortMenu = () => {
+            customSort.classList.remove('open');
+            sortTrigger.setAttribute('aria-expanded', 'false');
+        };
+
+        sortTrigger.addEventListener('click', () => {
+            const isOpen = customSort.classList.toggle('open');
+            sortTrigger.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        sortOptions.forEach((option) => {
+            option.addEventListener('click', () => {
+                const value = option.getAttribute('data-value') || 'newest';
+                const label = option.textContent?.trim() || 'Newest First';
+
+                sortOptions.forEach((item) => {
+                    item.classList.remove('active');
+                    item.setAttribute('aria-selected', 'false');
+                });
+
+                option.classList.add('active');
+                option.setAttribute('aria-selected', 'true');
+
+                sortSelect.value = value;
+                sortLabel.textContent = label;
+                currentSort = value;
+                currentPage = 1;
+
+                closeSortMenu();
+                filterAndSort();
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!customSort.contains(event.target as Node)) {
+                closeSortMenu();
+            }
+        });
+    }
+
+    // Tag filter handlers
+    tagFilters.forEach(button => {
+        button.addEventListener('click', () => {
+            tagFilters.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            currentTag = button.getAttribute('data-tag') || 'all';
+            currentPage = 1;
+            filterAndSort();
+        });
+    });
+
+    if (prevPage) {
+        prevPage.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage -= 1;
+                filterAndSort();
+            }
+        });
+    }
+
+    if (nextPage) {
+        nextPage.addEventListener('click', () => {
+            currentPage += 1;
+            filterAndSort();
+        });
+    }
+
+    // Initial filter
+    filterAndSort();
+</script>

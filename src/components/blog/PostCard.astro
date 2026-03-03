@@ -2,7 +2,7 @@
 import Socials, { type SocialMediaPostProps } from '../../components/blog/Socials.astro'
 
 interface Props {
-    tags: { title: string; description: string; createdDate: Date; sortOrder: number; }[];
+    tags: { slug: string; title: string; description: string; createdDate: Date; sortOrder: number; }[];
     date:Date;
     title:string;
     decription:string;
@@ -12,16 +12,167 @@ interface Props {
 
 const {date,title,decription,links,tags,slug} = Astro.props;
 const isoDate = new Date(date).toISOString();
-const localDateString = new Date(date).toLocaleDateString();
+const localDateString = new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+});
 ---
-<style>
+<style lang="scss">
+    $primary: #BB7A4F;
+    $contrast: #161616;
 
+    .post {
+        background: $contrast;
+        box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 35%);
+        border-radius: 25px 10px 25px 10px;
+        padding: 30px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, $primary 0%, transparent 50%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        &:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: inset 0 3px 15px #47372D, 0 30px 60px rgba(#000000, 45%);
+
+            &::before {
+                opacity: 0.12;
+            }
+
+            .actions a {
+                transform: translateY(-1px);
+                box-shadow: 0 3px 0 darken($primary, 15%),
+                            0 4px 10px rgba(#000000, 0.35);
+            }
+        }
+
+        > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        time {
+            font-family: 'CascadiyaCode';
+            color: #7a7d7d;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        h3 {
+            font-family: 'CascadiyaCode';
+            color: $primary;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            a {
+                font-family: 'CascadiyaCode';
+                background: rgba($primary, 0.1);
+                color: $primary;
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 600;
+                border: 1px solid rgba($primary, 0.2);
+                text-decoration: none;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background: rgba($primary, 0.2);
+                    transform: translateY(-2px);
+                }
+            }
+        }
+
+        p {
+            font-family: 'CascadiyaCode';
+            color: #7a7d7d;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+            flex: 1;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba($primary, 0.1);
+
+            a {
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-family: 'CascadiyaCode', monospace;
+                background: $primary;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                color: $contrast;
+                font-weight: 500;
+                font-size: 13px;
+                text-decoration: none;
+                display: inline-block;
+                box-shadow: 0 2px 0 darken($primary, 15%),
+                            0 3px 8px rgba(#000000, 0.3);
+
+                &:active {
+                    transform: translateY(1px);
+                    box-shadow: 0 1px 0 darken($primary, 15%),
+                                0 2px 4px rgba(#000000, 0.25);
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .post {
+            padding: 25px;
+
+            h3 {
+                font-size: 16px;
+            }
+
+            p {
+                font-size: 12px;
+            }
+
+            time {
+                font-size: 12px;
+            }
+        }
+    }
 </style>
 <div class="post">
     <time datetime={isoDate}>{localDateString}</time>
     <h3>{title}</h3>
     <div class="tags">
-        {tags.map(tag => <a href={`/tags/${tag}`}>{tag.title}</a>)}
+        {tags.map(tag => <a href={`/tags/${tag.slug}`}>{tag.title}</a>)}
     </div>
     <p>{decription}</p>
     <div class="actions">

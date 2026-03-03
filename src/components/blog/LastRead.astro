@@ -1,9 +1,92 @@
 ---
 
 ---
-<style>
+<style lang="scss">
+    $primary: #BB7A4F;
+    $contrast: #161616;
 
+    .lastRead {
+        background: $contrast;
+        box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 35%);
+        border-radius: 25px 10px 25px 10px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        min-height: 200px;
+        border: 2px dashed rgba($primary, 0.3);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, $primary 0%, transparent 50%);
+            border-radius: inherit;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .icon {
+            font-size: 48px;
+            color: rgba($primary, 0.4);
+
+            i {
+                font-size: 48px;
+            }
+        }
+
+        .text {
+            font-family: 'CascadiyaCode';
+            color: #7a7d7d;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.6;
+
+            strong {
+                color: $primary;
+                font-weight: 700;
+            }
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .lastRead {
+            padding: 25px;
+            min-height: 150px;
+
+            .icon {
+                font-size: 36px;
+
+                i {
+                    font-size: 36px;
+                }
+            }
+
+            .text {
+                font-size: 13px;
+            }
+        }
+    }
 </style>
 <div class="lastRead">
-    
+    <div class="icon">
+        <i class="ri-bookmark-line"></i>
+    </div>
+    <div class="text">
+        <strong>Continue Reading</strong><br />
+        Your recently viewed posts will appear here
+    </div>
 </div>

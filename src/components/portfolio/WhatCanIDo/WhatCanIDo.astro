@@ -42,13 +42,45 @@ import "../portfolio.scss";
 
 ---
 
+<style lang="scss">
+    $primary: #BB7A4F;
+    $contrast: #161616;
+
+    .knowMoreBtn {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'CascadiyaCode', monospace;
+        background: $primary;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        color: $contrast;
+        font-weight: 500;
+        font-size: 13px;
+        box-shadow: 0 2px 0 darken($primary, 15%),
+                    0 3px 8px rgba(#000000, 0.3);
+
+        &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 0 darken($primary, 15%),
+                        0 4px 10px rgba(#000000, 0.35);
+        }
+
+        &:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 darken($primary, 15%),
+                        0 2px 4px rgba(#000000, 0.25);
+        }
+    }
+</style>
+
 <section class="detail two-col">
     <div class="content">
         <h2>What can I Do</h2>
         <p>Well, I am a Full Stack Developer</p>
         <br>
         <p>My experience has been quite varied throughout my coding journey. Take a look at any one of them. (Or just scroll)</p>
-        <button>
+        <button class="knowMoreBtn">
             Know More
         </button>
     </div>

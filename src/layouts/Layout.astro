@@ -1,9 +1,14 @@
 ---
+import PersonSchema from '../components/SEO/PersonSchema.astro';
+import WebsiteSchema from '../components/SEO/WebsiteSchema.astro';
+import FloatingNav from '../components/shared/FloatingNav.astro';
+
 interface Props {
     title: string;
+    includeSchemas?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, includeSchemas = true } = Astro.props;
 ---
 
 <!doctype html>
@@ -163,11 +168,22 @@ const { title } = Astro.props;
             sizes="16x16 32x32"
             type="image/png"
         />
+        {includeSchemas && (
+            <>
+                <PersonSchema />
+                <WebsiteSchema />
+            </>
+        )}
     </head>
     <body>
         <slot />
+        <FloatingNav />
     </body>
 </html>
 <style is:global lang="scss">
     @import url("/styles/global.scss");
+    @import url("/fonts/_devicon.min.css");
+    @import url("/fonts/_rusty_cage_font.scss");
+    @import url("/fonts/_cascadiya_code_font.scss");
+    @import 'remixicon/fonts/remixicon.css';
 </style>

@@ -20,6 +20,7 @@ const postsCollection = defineCollection({
       author: z.string(),
       tags: z.array(reference('tags')),
       featured: z.boolean(),
+      heroImage: z.string().optional(),
       social: z.array(z.object({
         icon: z.string(),
         path: z.string(),

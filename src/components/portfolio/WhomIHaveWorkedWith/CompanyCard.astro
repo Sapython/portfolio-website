@@ -33,9 +33,14 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
             color:var(--primary-color);
             font-family: 'CascadiyaCode';
         }
-        img{
+        img, .placeholder-icon{
             margin-top: 40px;
             width: 30%;
+        }
+        .placeholder-icon{
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         p{
             text-transform: capitalize;
@@ -43,7 +48,7 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
         @media screen and (max-width: 500px){
             width: 150px;
             height: 150px;
-            img{
+            img, .placeholder-icon{
                 width: 40%;
             }
         }
@@ -62,7 +67,13 @@ const { image, startYear, endYear, title, flipped } = Astro.props;
 </script>
 
 <company-card class={flipped && 'flipped'}>
-    <Image src={image} alt={title}></Image>
+    {image && <Image src={image} alt={title}></Image>}
+    {!image && <div class="placeholder-icon">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="60" height="60" rx="10" fill="#bb7a4f" opacity="0.2"/>
+            <text x="30" y="38" text-anchor="middle" fill="#bb7a4f" font-size="24" font-family="CascadiyaCode">{title.substring(0, 2).toUpperCase()}</text>
+        </svg>
+    </div>}
     <span>{startYear}-{endYear}</span>
     <p>{title}</p>
 </company-card>

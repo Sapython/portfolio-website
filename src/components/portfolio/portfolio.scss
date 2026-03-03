@@ -1,6 +1,6 @@
 section.detail{
     background: var(--background-color);
-    overflow: hidden;
+    overflow: visible;
     $padding-inline:120px;
     > .content{
         max-width: 500px;
@@ -52,7 +52,12 @@ section.detail{
     > .experiences{
         display: grid;
         grid-template-areas: 'webDev webDev appDev' 'tools backendDev appDev';
-        gap:20px;
+        gap: 7px;
+        overflow: visible;
+
+        @media screen and (max-width: 1600px) {
+            max-width: 100%;
+        }
     }
     > .projects{
         display: grid;
@@ -71,15 +76,47 @@ section.detail{
         flex-direction: row;
         justify-content: space-between;
         align-items: flex-start;
-        flex-wrap: wrap;
-        margin-bottom: 2rem;
+        gap: 30px;
+        margin-bottom: 1rem;
         padding-inline: $padding-inline;
+        padding-block: 40px;
+
+        > .content {
+            flex: 0 0 auto;
+            max-width: 450px;
+        }
+
+        > .experiences {
+            flex: 1 1 auto;
+            max-width: 600px;
+        }
+
         .col{
             width: 48%;
             margin-bottom: 2rem;
-            @media (max-width: 850px){
+        }
+
+        @media (max-width: 1600px) {
+            flex-direction: column;
+            gap: 30px;
+
+            > .content,
+            > .experiences {
+                max-width: 100%;
                 width: 100%;
             }
+
+            .col {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 850px) {
+            padding-block: 30px;
+        }
+
+        @media screen and (max-width: 500px) {
+            padding-block: 25px;
         }
     }
     &.row{
@@ -96,10 +133,9 @@ section.detail{
             max-width: inherit;
         }
     }
-    // responsive for 1200px
-    @media screen and (max-width: 1690px){
+    // responsive for smaller desktops/large tablets
+    @media screen and (max-width: 1600px){
         &.two-col{
-            gap:50px;
             padding-inline: 80px;
         }
         &.row{
@@ -109,7 +145,7 @@ section.detail{
             padding-inline: 80px;
         }
         > .content{
-            width: 80vw;
+            width: 100%;
         }
         > .projects{
             padding-inline: 0px;
@@ -117,15 +153,11 @@ section.detail{
             gap:20px;
         }
     }
-    // responsive for 850px 
+    // responsive for 850px
     @media screen and (max-width: 850px){
         &.two-col{
-            flex-direction: column;
-            gap:50px;
-            padding-inline:80px;
-            .col{
-                width: 100%;
-            }
+            padding-inline: 80px;
+            gap: 30px;
         }
         &.row{
             padding-inline:80px;
@@ -134,7 +166,7 @@ section.detail{
             padding-inline: 80px;
         }
         > .content{
-            width: 80vw;
+            width: 100%;
         }
         > .projects{
             padding-inline: 0px;

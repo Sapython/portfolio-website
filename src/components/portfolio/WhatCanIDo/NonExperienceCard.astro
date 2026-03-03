@@ -1,104 +1,208 @@
 ---
 const { class: className, title, experience, projects, deployments, icons, height } = Astro.props;
-let canvasHeight = 100;
+let canvasHeight = 40;
 if (height === 'small') {
-    canvasHeight = 80;
+    canvasHeight = 35;
 } else if (height === 'medium') {
-    canvasHeight = 150;
+    canvasHeight = 50;
 } else if (height === 'large') {
-    canvasHeight = 220;
+    canvasHeight = 60;
 } else {
-    canvasHeight = 150;
+    canvasHeight = 50;
 }
 ---
 
 <style lang="scss">
+    $primary: #BB7A4F;
+    $contrast: #161616;
+
+    .cascadiyaFont {
+        font-family: 'CascadiyaCode';
+    }
+
     non-experience-card.experience {
-        border-radius: 20px;
-        background: #161616;
-        box-shadow: inset 0px 3px 30px rgba(0, 0, 0, 44%);
-        padding-bottom: 0;
+        border-radius: 0;
+        background: $contrast;
+        box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 35%);
+        padding: 0;
         overflow: hidden;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        transition: all 0.3s ease-in-out;
-        border: transparent 2px solid;
-        &:hover{
-            border: #583925 2px solid;
-            cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, $primary 0%, transparent 50%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+            pointer-events: none;
         }
+
+        &:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: inset 0 3px 15px #47372D, 0 30px 60px rgba(#000000, 45%);
+            cursor: pointer;
+
+            &::before {
+                opacity: 0.12;
+            }
+
+            .content .icons i {
+                color: $primary;
+            }
+        }
+
         .content {
-            flex: 2;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly;
-            gap: 10px;
-            padding: 20px;
-            font-family: "CascadiyaCode";
+            gap: 4px;
+            padding: 28px;
+            position: relative;
+            z-index: 1;
 
             & > * {
                 margin: 0;
             }
 
             h4 {
-                font-family: "Azonix";
-                -webkit-text-stroke-width: 1px;
-                -webkit-text-stroke-color: var(--primary-color);
-                color: white;
-                text-shadow: 0px 0px 60px var(--primary-color);
+                @extend .cascadiyaFont;
+                color: $primary;
                 text-align: left;
-                font-size: 30px;
-                margin: 0px;
-                animation: flicker 3s infinite;
-
-                @keyframes flicker {
-                    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-                        text-shadow: 0px 0px 60px var(--primary-color);
-                    }
-                    20%, 24%, 55% {
-                        text-shadow: none;
-                    }
-                }
+                font-size: 26px;
+                font-weight: 700;
+                margin: 0;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                line-height: 1.1;
             }
 
-            p {
-                color: var(--primary-color);
-                text-align: left;
+            .stats {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                margin-top: 0;
+
+                p {
+                    @extend .cascadiyaFont;
+                    color: #7a7d7d;
+                    font-size: 14px;
+                    text-align: left;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    line-height: 1.3;
+
+                    &::before {
+                        content: '▹';
+                        color: $primary;
+                        font-size: 16px;
+                    }
+                }
             }
 
             .icons {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 10px;
+                gap: 6px;
                 align-items: center;
+                margin-top: 4px;
 
                 i {
-                    color: var(--primary-color);
-                    font-size: 25px;
+                    color: #5a5d5d;
+                    font-size: 22px;
+                    transition: all 0.3s ease;
                 }
             }
         }
 
+        .canvasWrapper {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
         canvas {
             width: 100%;
-            height: 20%;
+            display: block;
         }
 
         &.webDev {
             grid-area: webDev;
+            border-radius: 50px 0 0 0;
         }
 
         &.appDev {
             grid-area: appDev;
+            border-radius: 0 50px 50px 0;
         }
 
         &.tools {
             grid-area: tools;
+            border-radius: 0 0 0 50px;
         }
 
         &.backendDev {
             grid-area: backendDev;
+            border-radius: 0;
+        }
+
+        @media screen and (max-width: 850px) {
+            .content {
+                padding: 24px;
+
+                h4 {
+                    font-size: 24px;
+                }
+
+                .stats p {
+                    font-size: 13px;
+                }
+
+                .icons i {
+                    font-size: 20px;
+                }
+            }
+        }
+
+        @media screen and (max-width: 500px) {
+            &.webDev {
+                border-radius: 50px 50px 0 0;
+            }
+
+            &.appDev,
+            &.backendDev {
+                border-radius: 0;
+            }
+
+            &.tools {
+                border-radius: 0 0 50px 50px;
+            }
+
+            .content {
+                padding: 22px;
+
+                h4 {
+                    font-size: 22px;
+                }
+
+                .stats p {
+                    font-size: 12px;
+                }
+
+                .icons i {
+                    font-size: 18px;
+                }
+            }
         }
     }
 </style>
@@ -106,14 +210,18 @@ if (height === 'small') {
 <non-experience-card role="link" href="/webdev" class:list={['experience', className]} style={{ '--canvas-height': canvasHeight }} data-canvasHeight={canvasHeight}>
     <div class="content">
         <h4>{title}</h4>
-        {experience && <p>+{experience} Years Experience</p>}
-        {projects && <p>+{projects} Production Projects</p>}
-        {deployments && <p>+{deployments} Active Deployments</p>}
+        <div class="stats">
+            {experience && <p>{experience} Years Experience</p>}
+            {projects && <p>{projects} Production Projects</p>}
+            {deployments && <p>{deployments} Active Deployments</p>}
+        </div>
         <div class="icons">
             {icons && icons.map((icon: any) => <i class={icon}></i>)}
         </div>
     </div>
-    <canvas></canvas>
+    <div class="canvasWrapper">
+        <canvas></canvas>
+    </div>
 </non-experience-card>
 
 <svg width="0" height="0">
@@ -150,7 +258,7 @@ if (height === 'small') {
         constructor() {
             super();
             this.delayValue = Math.floor(Math.random() * 3001);
-            this.dataset.canvasheight = window.innerWidth < 500 ? "80" : "150";
+            this.dataset.canvasheight = window.innerWidth < 500 ? "35" : "50";
             this.DURATION = 2000;
             this.addEventListener('click', this.handleClick.bind(this));
 
@@ -191,7 +299,7 @@ if (height === 'small') {
         }
 
         initCanvas() {
-            const canvas = this.querySelector("canvas");
+            const canvas = this.querySelector(".canvasWrapper canvas");
             if (canvas) {
                 canvas.width = this.offsetWidth;
                 canvas.height = Number(this.dataset.canvasheight);

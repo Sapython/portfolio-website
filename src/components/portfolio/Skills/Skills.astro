@@ -1,0 +1,177 @@
+---
+import "../portfolio.scss"
+
+const allSkills = [
+    { name: "TypeScript", icon: "devicon-typescript-plain", years: "6+", category: "Languages" },
+    { name: "Python", icon: "devicon-python-plain", years: "6+", category: "Languages" },
+    { name: "Golang", icon: "devicon-go-original-wordmark", years: "3-4", category: "Languages" },
+    { name: "Angular", icon: "devicon-angularjs-plain", years: "4+", category: "Frameworks" },
+    { name: "React", icon: "devicon-react-original", years: "2+", category: "Frameworks" },
+    { name: "Ionic", icon: "devicon-ionic-original", years: "4+", category: "Frameworks" },
+    { name: "Django", icon: "devicon-django-plain", years: "4+", category: "Frameworks" },
+    { name: "Flask", icon: "devicon-flask-original", years: "4+", category: "Frameworks" },
+    { name: "GCP", icon: "devicon-googlecloud-plain", years: "5+", category: "Cloud" },
+    { name: "Firebase", icon: "devicon-firebase-plain", years: "5+", category: "Cloud" },
+    { name: "Docker", icon: "devicon-docker-plain", years: "3+", category: "DevOps" },
+    { name: "Kubernetes", icon: "devicon-kubernetes-plain", years: "2+", category: "DevOps" },
+    { name: "PostgreSQL", icon: "devicon-postgresql-plain", years: "3+", category: "Databases" },
+    { name: "Redis", icon: "devicon-redis-plain", years: "2+", category: "Databases" },
+    { name: "HTML/SASS", icon: "devicon-html5-plain", years: "6+", category: "Languages" },
+    { name: "Flutter", icon: "devicon-flutter-plain", years: "2+", category: "Frameworks" },
+    { name: "Cloudflare", icon: "devicon-cloudflare-plain", years: "5+", category: "Cloud" },
+    { name: "Jenkins", icon: "devicon-jenkins-plain", years: "2+", category: "DevOps" },
+    { name: "MySQL", icon: "devicon-mysql-plain", years: "4+", category: "Databases" },
+];
+---
+
+<style lang="scss">
+    .cascadiyaFont{
+        font-family: 'CascadiyaCode';
+    }
+    .skillsSection {
+        .skillsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding-inline: 70px;
+            padding-bottom: 40px;
+            justify-content: center;
+
+            @media screen and (max-width: 1690px) {
+                padding-inline: 0px;
+            }
+
+            @media screen and (max-width: 600px) {
+                padding-inline: 20px;
+                gap: 15px;
+            }
+        }
+
+        .skillCard {
+            $primary: #BB7A4F;
+            $contrast: #161616;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: $contrast;
+            box-shadow: inset 0 3px 10px #47372D, -10px 40px 50px rgba(#000000, 38%);
+            border-radius: 25px 10px 25px 10px;
+            padding: 20px 25px;
+            min-width: 140px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(135deg, $primary 0%, transparent 50%);
+                border-radius: 25px 10px 25px 10px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                z-index: 0;
+            }
+
+            &:hover {
+                transform: translateY(-8px) scale(1.05);
+                box-shadow: inset 0 3px 15px #47372D, -15px 50px 60px rgba(#000000, 48%);
+
+                &::before {
+                    opacity: 0.15;
+                }
+
+                i {
+                    color: $primary;
+                    transform: scale(1.1);
+                }
+
+                .skillName {
+                    color: $primary;
+                }
+            }
+
+            > * {
+                position: relative;
+                z-index: 1;
+            }
+
+            i {
+                font-size: 42px;
+                color: #5a5d5d;
+                transition: all 0.3s ease;
+            }
+
+            .skillName {
+                @extend .cascadiyaFont;
+                font-size: 15px;
+                font-weight: 600;
+                color: var(--primary-color);
+                text-align: center;
+                transition: color 0.3s ease;
+            }
+
+            .skillYears {
+                @extend .cascadiyaFont;
+                font-size: 12px;
+                color: #5a5d5d;
+                background: rgba(#BB7A4F, 0.1);
+                padding: 4px 12px;
+                border-radius: 12px;
+                border: 1px solid rgba(#BB7A4F, 0.2);
+            }
+
+            .skillCategory {
+                @extend .cascadiyaFont;
+                font-size: 10px;
+                color: #5a5d5d;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                position: absolute;
+                top: 8px;
+                right: 10px;
+            }
+
+            @media screen and (max-width: 600px) {
+                min-width: 110px;
+                padding: 15px 18px;
+
+                i {
+                    font-size: 32px;
+                }
+
+                .skillName {
+                    font-size: 13px;
+                }
+
+                .skillYears {
+                    font-size: 11px;
+                    padding: 3px 10px;
+                }
+            }
+        }
+    }
+</style>
+
+<section class="detail row skillsSection">
+    <div class="content">
+        <h2>Tech Stack</h2>
+        <p>Technologies and tools I work with, organized by experience level.</p>
+        <br />
+    </div>
+    <div class="skillsContainer">
+        {allSkills.map((skill) => (
+            <div class="skillCard">
+                <span class="skillCategory">{skill.category}</span>
+                <i class={`devicon ${skill.icon}`}></i>
+                <span class="skillName">{skill.name}</span>
+                <span class="skillYears">{skill.years} yrs</span>
+            </div>
+        ))}
+    </div>
+</section>

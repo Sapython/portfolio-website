@@ -1,0 +1,103 @@
+---
+interface Skill {
+    name: string;
+    icon: string;
+    years: string;
+}
+
+interface Props {
+    title: string;
+    skills: Skill[];
+}
+
+const { title, skills } = Astro.props;
+---
+
+<style lang="scss">
+.skillCategory {
+    background: linear-gradient(135deg, #1e2726 0%, #1a1e1d 100%);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid #2a3332;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        border-color: #bb7a4f;
+    }
+
+    h3 {
+        font-family: 'CascadiyaCode', monospace;
+        color: #bb7a4f;
+        font-size: 22px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .skillsList {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        .skillItem {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: #16191a;
+            border-radius: 10px;
+            transition: background 0.3s ease;
+
+            &:hover {
+                background: #1e2322;
+            }
+
+            i {
+                font-size: 28px;
+                color: #5a5d5d;
+                transition: color 0.3s ease;
+                min-width: 28px;
+            }
+
+            &:hover i {
+                color: #bb7a4f;
+            }
+
+            .skillInfo {
+                flex: 1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .skillName {
+                    font-family: 'CascadiyaCode', monospace;
+                    color: var(--primary-color);
+                    font-size: 16px;
+                    font-weight: 500;
+                }
+
+                .skillYears {
+                    font-family: 'CascadiyaCode', monospace;
+                    color: #5a5d5d;
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}
+</style>
+
+<div class="skillCategory">
+    <h3>{title}</h3>
+    <div class="skillsList">
+        {skills.map((skill) => (
+            <div class="skillItem">
+                <i class={`devicon ${skill.icon}`}></i>
+                <div class="skillInfo">
+                    <span class="skillName">{skill.name}</span>
+                    <span class="skillYears">{skill.years} yrs</span>
+                </div>
+            </div>
+        ))}
+    </div>
+</div>

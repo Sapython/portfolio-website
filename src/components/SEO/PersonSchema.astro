@@ -1,0 +1,47 @@
+---
+// Person Schema for Kumar Saptam
+const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Kumar Saptam",
+    "alternateName": "sapython",
+    "url": "https://sapython.me",
+    "image": "https://sapython.me/images/logoFull.png",
+    "sameAs": [
+        "https://github.com/sapython",
+        "https://twitter.com/kumar_saptam",
+        "https://www.linkedin.com/in/kumar-saptam"
+    ],
+    "jobTitle": "Full Stack Engineer",
+    "worksFor": {
+        "@type": "Organization",
+        "name": "Shiphouse Ecommerce"
+    },
+    "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Prayagraj",
+        "addressRegion": "Uttar Pradesh",
+        "addressCountry": "IN"
+    },
+    "email": "saptampro2003@gmail.com",
+    "telephone": "+919517457296",
+    "knowsAbout": [
+        "TypeScript",
+        "Python",
+        "Golang",
+        "Angular",
+        "React",
+        "Full Stack Development",
+        "Cloud Computing",
+        "DevOps",
+        "E-Commerce",
+        "System Architecture"
+    ],
+    "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Software Engineering"
+    }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />

@@ -3,97 +3,275 @@ import ProjectCard from "./ProjectCard.astro";
 import "../portfolio.scss"
 ---
 
-<section class="detail row">
-        <div class="content">
-                <h2>What have i done</h2>
-                <p>These are some of the projects that I have worked upon.</p>
-                <br />
-        </div>
-        <div class="projects">
-                <ProjectCard
-                        projectName="POS Billing Platform"
-                        route="project"
-                        techIcons={[
-                                "devicon-electron-original", // angular, typescript, electron, nodejs, mongodb
-                                "devicon-karma-plain",
-                                "devicon-angularjs-plain",
-                                "devicon-firebase-plain",
-                                "devicon-python-plain",
-                                "devicon-nodejs-plain",
-                                "devicon-typescript-plain",
-                                "devicon-ionic-original"
-                        ]}
-                        description="This is a full billing platform, consisting of an admin android app, a desktop billing app. The admin app was there to provide analytics and user management. Whereas the desktop app was used to generate bills."
-                />
-                <ProjectCard
-                        projectName="Payment Platform"
-                        route="project"
-                        techIcons={[
-                                "devicon-python-plain",
-                                "devicon-angularjs-plain",
-                                "devicon-firebase-plain",
-                                "devicon-typescript-plain",
-                                "devicon-flask-original",
-                                "devicon-ionic-original",
-                                "devicon-java-plain",
-                        ]}
-                        description='This was a payment platform consisting of an "App" and an "Admin Panel", to handle AEPS based transaction. This required hardware connection through USB port of any android device. Because it was payment platform, the connection was made E2E encrypted.'
-                />
-                <ProjectCard
-                        projectName="Home Service Booking Platform"
-                        route="project"
-                        techIcons={[
-                                "devicon-karma-plain",
-                                "devicon-angularjs-plain",
-                                "devicon-firebase-plain",
-                                "devicon-typescript-plain",
-                                "devicon-ionic-original",
-                                "devicon-sass-original",
-                                "devicon-redux-original"
-                        ]}
-                        description="A very simple E-Commerce based platform, it consisted of 2 Android Apps and 1 Web App. It was a team project, I was responsible for one of the Android App. This was the first time I used NGRX in production."
-                />
-                <ProjectCard
-                        projectName="Laundry Booking Platform"
-                        route="project"
-                        techIcons={[
-                                "devicon-karma-plain",
-                                "devicon-angularjs-plain",
-                                "devicon-firebase-plain",
-                                "devicon-typescript-plain",
-                                "devicon-ionic-original",
-                                "devicon-sass-original",
-                                "devicon-redux-original"
-                        ]}
-                        description="This was a very simple platform, consisting of 2 Android App and 1 Web App. It was unique in a way because it required a lot of interactions between the applications, so data transmission was a big challenge."
-                />
-                <ProjectCard
-                        projectName="Jewellery Booking Platform"
-                        route="project"
-                        techIcons={[
-                                "devicon-karma-plain",
-                                "devicon-angularjs-plain",
-                                "devicon-firebase-plain",
-                                "devicon-typescript-plain",
-                                "devicon-ionic-original",
-                                "devicon-sass-original",
-                                "devicon-redux-original"
-                        ]}
-                        description="Simple E-Commerce, the basic stuff, buying, cart, addresses, coupons, etc. The most challenging part was to create an algorithm which would take weigth, caret and size of a ring, and was able to derive a price for it."
-                />
-                <ProjectCard
-                        projectName="Shipment Management App"
-                        route="project"
-                        techIcons={[
-                                "devicon-karma-plain",
-                                "devicon-angularjs-plain",
-                                "devicon-firebase-plain",
-                                "devicon-typescript-plain",
-                                "devicon-ionic-original",
-                                "devicon-sass-original",
-                                "devicon-redux-original"
-                        ]}
-                        description="A platform to manage incoming shipments in a warehouse. easy part was to record items in entry and exit. Hard part was to sort the items on go and keep track of it for the next exit. And to do that efficiently, we had to use some speical algorithms for that."
-                />
-        </div>
+<style lang="scss">
+.bentoGrid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 7px;
+    row-gap: 7px;
+    padding-inline: 70px;
+    padding-bottom: 70px;
+
+    // Hero card - Shiphouse (largest, most prominent)
+    .project-hero {
+        grid-column: span 8;
+        grid-row: span 2;
+    }
+
+    // Important projects - medium size
+    .project-large {
+        grid-column: span 4;
+    }
+
+    // Regular projects - standard size
+    .project-medium {
+        grid-column: span 4;
+    }
+
+    // Small projects
+    .project-small {
+        grid-column: span 3;
+    }
+
+    // Wide projects
+    .project-wide {
+        grid-column: span 6;
+    }
+
+    // Tablet/smaller desktop responsive (below 1600px)
+    @media screen and (max-width: 1600px) {
+        padding-inline: 80px;
+        column-gap: 7px;
+        row-gap: 7px;
+
+        .project-hero {
+            grid-column: span 12;
+            grid-row: span 1;
+        }
+
+        .project-large {
+            grid-column: span 6;
+        }
+
+        .project-medium {
+            grid-column: span 6;
+        }
+
+        .project-small {
+            grid-column: span 6;
+        }
+
+        .project-wide {
+            grid-column: span 6;
+        }
+    }
+
+    // Tablet responsive
+    @media screen and (max-width: 1200px) {
+        padding-inline: 80px;
+        column-gap: 7px;
+        row-gap: 7px;
+
+        .project-hero {
+            grid-column: span 12;
+        }
+
+        .project-large,
+        .project-medium,
+        .project-small,
+        .project-wide {
+            grid-column: span 6;
+        }
+    }
+
+    // Mobile responsive
+    @media screen and (max-width: 850px) {
+        padding-inline: 80px;
+        column-gap: 7px;
+        row-gap: 7px;
+
+        .project-hero,
+        .project-large,
+        .project-medium,
+        .project-small,
+        .project-wide {
+            grid-column: span 12;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        padding-inline: 40px;
+        column-gap: 7px;
+        row-gap: 7px;
+    }
+
+    @media screen and (max-width: 500px) {
+        padding-inline: 20px;
+        column-gap: 7px;
+        row-gap: 7px;
+    }
+}
+</style>
+
+<section id="projects" class="detail row">
+	<div class="content">
+		<h2>What have i done</h2>
+		<p>From multi-tenant SaaS platforms to end-to-end encrypted messaging systems, here are some key projects I've architected and built.</p>
+		<br />
+	</div>
+	<div class="bentoGrid">
+		<!-- Hero Project: Shiphouse -->
+		<div class="project-hero">
+			<ProjectCard
+				projectName="Shiphouse E-Commerce Platform"
+				route="project/shiphouse-backend"
+				size="hero"
+				position="top-left"
+				techIcons={[
+					"devicon-go-original-wordmark",
+					"devicon-postgresql-plain",
+					"devicon-redis-plain",
+					"devicon-docker-plain",
+					"devicon-typescript-plain",
+					"devicon-react-original"
+				]}
+				description="Complete multi-tenant e-commerce SaaS with 800+ API endpoints, drag-and-drop website builder, and real-time order processing. Handles 5000 concurrent clients per store with worker pools processing 50 orders/batch. Deployed with Postgres, Redis, Meilisearch, and full monitoring stack."
+				metrics={[
+					{ value: "800+", label: "API Endpoints" },
+					{ value: "5K", label: "Concurrent Clients" },
+					{ value: "50/batch", label: "Order Processing" },
+					{ value: "36+", label: "DB Indexes" },
+					{ value: "Multi-Node", label: "High Availability" },
+					{ value: "Real-time", label: "SSE Updates" }
+				]}
+			/>
+		</div>
+
+		<!-- Top row alongside hero -->
+		<div class="project-large">
+			<ProjectCard
+				projectName="POS Billing Platform"
+				route="project/billing-platform"
+				size="large"
+				position="top-right"
+				techIcons={[
+					"devicon-electron-original",
+					"devicon-python-plain",
+					"devicon-angularjs-plain",
+					"devicon-typescript-plain"
+				]}
+				description="High-performance multi-platform billing system processing 600 bills/second. Real-time cross-device sync using WebSockets and Memcache with automatic state recovery."
+			/>
+		</div>
+
+		<div class="project-large">
+			<ProjectCard
+				projectName="Payment Platform - AEPS"
+				route="project/payment-platform"
+				size="large"
+				position="middle-right"
+				techIcons={[
+					"devicon-python-plain",
+					"devicon-angularjs-plain",
+					"devicon-firebase-plain",
+					"devicon-ionic-original"
+				]}
+				description="Biometric payment authentication system with USB fingerprint reader integration. Secure E2E encrypted channel for transactions with NGRX state management."
+			/>
+		</div>
+
+		<!-- Second row -->
+		<div class="project-wide">
+			<ProjectCard
+				projectName="Govindam - Sakha Social Platform"
+				route="project/govindam"
+				size="medium"
+				position="middle"
+				techIcons={[
+					"devicon-go-original-wordmark",
+					"devicon-typescript-plain",
+					"devicon-ionic-original",
+					"devicon-docker-plain"
+				]}
+				description="Microservices social platform with end-to-end encrypted messaging using Signal Protocol. Reimplemented PQXD3H protocol from scratch and verified in CryptoVerif."
+			/>
+		</div>
+
+		<div class="project-wide">
+			<ProjectCard
+				projectName="Home Service Booking Platform"
+				route="project/home-service"
+				size="medium"
+				position="middle"
+				techIcons={[
+					"devicon-angularjs-plain",
+					"devicon-typescript-plain",
+					"devicon-ionic-original",
+					"devicon-firebase-plain"
+				]}
+				description="E-Commerce platform for home services with real-time provider matching, service tracking, and payment processing. Built with mobile-first approach using NGRX."
+			/>
+		</div>
+
+		<!-- Third row -->
+		<div class="project-small">
+			<ProjectCard
+				projectName="Laundry Platform"
+				route="project/laundry-platform"
+				size="small"
+				position="bottom-left"
+				techIcons={[
+					"devicon-angularjs-plain",
+					"devicon-ionic-original",
+					"devicon-firebase-plain"
+				]}
+				description="On-demand laundry service with pickup/delivery scheduling and dynamic pricing based on garment type and service."
+			/>
+		</div>
+
+		<div class="project-small">
+			<ProjectCard
+				projectName="Jewellery Platform"
+				route="project/jewellery-platform"
+				size="small"
+				position="middle"
+				techIcons={[
+					"devicon-angularjs-plain",
+					"devicon-ionic-original",
+					"devicon-firebase-plain"
+				]}
+				description="Custom jewellery e-commerce with dynamic pricing algorithm based on weight, carat, and dimensions. Virtual try-on capabilities."
+			/>
+		</div>
+
+		<div class="project-small">
+			<ProjectCard
+				projectName="Shipment Management"
+				route="project/shipment-management"
+				size="small"
+				position="middle"
+				techIcons={[
+					"devicon-angularjs-plain",
+					"devicon-ionic-original",
+					"devicon-firebase-plain"
+				]}
+				description="Warehouse inventory system with intelligent sorting algorithms and automated retrieval based on FIFO/LIFO strategies."
+			/>
+		</div>
+
+		<div class="project-small">
+			<ProjectCard
+				projectName="Shiphouse Website Builder"
+				route="project/shiphouse-frontend"
+				size="small"
+				position="bottom-right"
+				techIcons={[
+					"devicon-typescript-plain",
+					"devicon-react-original",
+					"devicon-tailwindcss-plain"
+				]}
+				description="Responsive drag-and-drop website builder with differential rendering. Published NPM package with monorepo architecture."
+			/>
+		</div>
+	</div>
 </section>

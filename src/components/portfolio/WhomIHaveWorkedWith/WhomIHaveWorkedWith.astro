@@ -1,7 +1,6 @@
 ---
 import CompanyCard from "./CompanyCard.astro";
 import "../portfolio.scss"
-import githubImage from "../../../assets/images/github-original.png";
 import swayambhuImage from "../../../assets/images/swayambhu.png";
 import shreevaImage from "../../../assets/images/shreeva.png";
 ---
@@ -9,12 +8,13 @@ import shreevaImage from "../../../assets/images/shreeva.png";
 <section class="detail row innerPadding">
     <div class="content">
         <h2>Whom i have worked with</h2>
-        <p>My past experiences, for the professional journey.</p>
+        <p>My professional journey across innovative companies, from payment solutions to e-commerce platforms.</p>
         <br>
     </div>
     <div class="companies">
-        <CompanyCard title="Github" image={githubImage} startYear="2018" endYear="2023"></CompanyCard>
-        <CompanyCard title="Shreeva" flipped={true} image={shreevaImage} startYear="2021" endYear="2023"></CompanyCard>
-        <CompanyCard title="Swayambhu" image={swayambhuImage} startYear="2019" endYear="2021"></CompanyCard>
+        <CompanyCard title="Shiphouse Ecommerce" startYear="2025" endYear="2026"></CompanyCard>
+        <CompanyCard title="Govindam" flipped={true} startYear="2024" endYear="2025"></CompanyCard>
+        <CompanyCard title="Shreeva Soft-Tech" image={shreevaImage} startYear="2022" endYear="2023"></CompanyCard>
+        <CompanyCard title="Swayambhu Innovations" flipped={true} image={swayambhuImage} startYear="2020" endYear="2022"></CompanyCard>
     </div>
 </section>
