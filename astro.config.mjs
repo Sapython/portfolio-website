@@ -7,13 +7,10 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   integrations: [solidJs()],
   output: "hybrid",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'cloudflare'
+  }),
   devToolbar:{
     enabled:false
-  },
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/sharp'
-    }
   }
 });

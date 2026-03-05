@@ -299,7 +299,7 @@ if (height === 'small') {
         }
 
         initCanvas() {
-            const canvas = this.querySelector(".canvasWrapper canvas");
+            const canvas = this.querySelector(".canvasWrapper canvas") as HTMLCanvasElement;
             if (canvas) {
                 canvas.width = this.offsetWidth;
                 canvas.height = Number(this.dataset.canvasheight);

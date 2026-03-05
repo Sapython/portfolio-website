@@ -313,7 +313,7 @@
             // Check if this link matches the current page
             const isCurrentPage =
                 (currentPath === '/' && href === '/') ||
-                (currentPath !== '/' && href !== '/' && currentPath.startsWith(href));
+                (currentPath !== '/' && href !== '/' && href && currentPath.startsWith(href));
 
             if (isCurrentPage) {
                 // Hide the current page link

@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import subtractedImage from "../../../assets/images/subtracted.png";
+import subtractedImage from "../../../assets/images/subtracted.webp";
 import fullImage from "../../../assets/images/fullImage_removed.webp"
 const imageWidths = [300, 600, 900, 1200, 1500, 1800, 2100, 2400];
 const screenSizes = `((min-width:2400px) and (max-width:8000px)) 2400px,
@@ -196,26 +196,45 @@ section.headerContainer {
 }
 </style>
 <script>
-        import Lenis from "@studio-freight/lenis";
-        import { gsap } from "gsap";
-        import { ScrollTrigger } from "gsap/ScrollTrigger";
-        import "vanilla-tilt";
-        import Parallax from "parallax-js";
-        var scene = document.getElementById("scene");
-        if (scene) {
-                var parallaxInstance = new Parallax(scene,{
-                        limitX:80,
-                        limitY:0.1
-                });
-        }
-        const lenis = new Lenis();
-        function raf(time: any) {
-                lenis.raf(time);
-                requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
+        // Lazy load animation libraries for better performance
+        async function initAnimations() {
+                const [
+                        { default: Lenis },
+                        { gsap },
+                        { ScrollTrigger },
+                        { default: Parallax }
+                ] = await Promise.all([
+                        import("@studio-freight/lenis"),
+                        import("gsap"),
+                        import("gsap/ScrollTrigger"),
+                        import("parallax-js")
+                ]);
 
-        gsap.registerPlugin(ScrollTrigger);
+                // Initialize Parallax
+                var scene = document.getElementById("scene");
+                if (scene) {
+                        new Parallax(scene,{
+                                limitX:80,
+                                limitY:0.1
+                        });
+                }
+
+                // Initialize Lenis smooth scrolling
+                const lenis = new Lenis();
+                function raf(time: any) {
+                        lenis.raf(time);
+                        requestAnimationFrame(raf);
+                }
+                requestAnimationFrame(raf);
+
+                gsap.registerPlugin(ScrollTrigger);
+
+                return { gsap, ScrollTrigger };
+        }
+
+        // Start loading animations after a short delay to prioritize critical content
+        setTimeout(() => {
+                initAnimations().then(({ gsap, ScrollTrigger }) => {
         let fadeOutPatternColors = [
                 "radial-gradient(#1A1E1D,#1A1E1D)",
                 "radial-gradient(#242727ff,#1A1E1D)",
@@ -296,15 +315,17 @@ section.headerContainer {
                         scrub: true,
                 },
         });
+                });
+        }, 100); // Delay animation loading by 100ms
 
 </script>
 <section class="headerContainer">
         <div id="overlay"></div>
         <div id="scene">
-                <Image src={subtractedImage} sizes={screenSizes} widths={imageWidths} width={1920} height={1281} data-depth="0.1" class="backgroundImage" alt="A dark greyish sky" />
+                <Image src={subtractedImage} sizes={screenSizes} widths={imageWidths} width={1920} height={1281} loading="eager" data-depth="0.1" class="backgroundImage" alt="A dark greyish sky" />
         </div>
         <div class="portfolioContainer">
-                <Image src={fullImage} sizes={screenSizes} widths={imageWidths} width={1920} height={1281} class="portfolioImage" alt="Mount Fuji" />
+                <Image src={fullImage} sizes={screenSizes} widths={imageWidths} width={1920} height={1281} loading="eager" class="portfolioImage" alt="Mount Fuji" />
                 <span></span>
         </div>
         <div class="contentContainer">

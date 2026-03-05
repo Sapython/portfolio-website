@@ -1,5 +1,17 @@
 ---
 import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+    image: ImageMetadata;
+    startYear: string;
+    endYear: string;
+    title: string;
+    position: string;
+    description: string;
+    highlights?: string[];
+}
+
 const { image, startYear, endYear, title, position, description, highlights } = Astro.props;
 ---
 <style lang="scss">
@@ -184,7 +196,7 @@ const { image, startYear, endYear, title, position, description, highlights } = 
 <div class="experience-card">
     <div class="company-header">
         <div class="company-logo">
-            {image && <Image src={image} alt={title}></Image>}
+            {image && <Image src={image} alt={title} width={200} height={200} loading="lazy"></Image>}
             {!image && <div class="placeholder-icon">
                 <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="46" height="46" rx="8" fill="#bb7a4f" opacity="0.2"/>
