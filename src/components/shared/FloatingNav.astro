@@ -7,9 +7,7 @@
 
     .floatingNav {
         position: fixed;
-        bottom: 30px;
         left: 50%;
-        transform: translateX(-50%) translateY(150%);
         z-index: 1000;
         background: $contrast;
         box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 45%);
@@ -22,10 +20,28 @@
         opacity: 0;
         pointer-events: none;
 
+        // Default: bottom position for home page
+        bottom: 30px;
+        transform: translateX(-50%) translateY(150%);
+
+        &.topPosition {
+            // Top position for other pages
+            top: 30px;
+            bottom: auto;
+            transform: translateX(-50%) translateY(-150%);
+        }
+
         &.visible {
-            transform: translateX(-50%) translateY(0);
             opacity: 1;
             pointer-events: all;
+
+            &.topPosition {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            &:not(.topPosition) {
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
         .navLink {
@@ -39,6 +55,18 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            i {
+                font-size: 16px;
+                display: none; // Hide icons on desktop
+            }
+
+            span {
+                display: inline;
+            }
 
             &::before {
                 content: '';
@@ -81,51 +109,187 @@
             }
         }
 
-        @media screen and (max-width: 600px) {
-            bottom: 20px;
-            padding: 10px 15px;
-            gap: 6px;
+        @media screen and (max-width: 768px) {
+            // Mobile tab bar styles
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 100%;
+            border-radius: 0;
+            padding: 12px 8px calc(12px + env(safe-area-inset-bottom)) 8px;
+            transform: translateX(0) translateY(100%);
+            box-shadow: 0 -4px 20px rgba(#000000, 0.4);
+            gap: 0;
+            justify-content: space-evenly;
+            display: flex;
+
+            &.topPosition {
+                // On mobile, always show at bottom even on non-home pages
+                top: auto;
+                bottom: 0;
+                transform: translateX(0) translateY(100%);
+            }
+
+            &.visible {
+                transform: translateX(0) translateY(0) !important;
+
+                &.topPosition {
+                    transform: translateX(0) translateY(0) !important;
+                }
+
+                &:not(.topPosition) {
+                    transform: translateX(0) translateY(0) !important;
+                }
+            }
 
             .navLink {
-                padding: 8px 14px;
-                font-size: 12px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 8px 4px;
+                border-radius: 12px;
+                gap: 4px;
+                flex: 1 1 0;
+                min-width: 0;
+                max-width: 100px;
+
+                i {
+                    display: block;
+                    font-size: 22px;
+                    line-height: 1;
+                }
+
+                span {
+                    font-size: 11px;
+                    font-weight: 600;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 100%;
+                }
+
+                &:hover {
+                    background: transparent;
+
+                    &::before {
+                        opacity: 0;
+                    }
+                }
+
+                &.active {
+                    background: transparent;
+                    box-shadow: none;
+                    color: $primary;
+
+                    i {
+                        transform: scale(1.15);
+                    }
+
+                    &:hover, &:active {
+                        transform: none;
+                        box-shadow: none;
+                    }
+                }
             }
         }
 
-        @media screen and (max-width: 500px) {
-            bottom: 15px;
-            padding: 8px 12px;
-            gap: 4px;
+        @media screen and (max-width: 400px) {
+            padding: 10px 4px calc(10px + env(safe-area-inset-bottom)) 4px;
 
             .navLink {
-                padding: 7px 12px;
-                font-size: 11px;
+                padding: 6px 2px;
+                max-width: 80px;
+
+                i {
+                    font-size: 20px;
+                }
+
+                span {
+                    font-size: 10px;
+                }
             }
         }
     }
 </style>
 
 <nav class="floatingNav" id="floatingNav">
-    <a href="/blog" class="navLink">Blog</a>
-    <a href="/projects" class="navLink">Projects</a>
-    <a href="/newsletter" class="navLink">Newsletter</a>
-    <a href="/contact" class="navLink">Contact</a>
+    <a href="/" class="navLink" data-page="home">
+        <i class="ri-home-line"></i>
+        <span>Home</span>
+    </a>
+    <a href="/blog" class="navLink" data-page="blog">
+        <i class="ri-article-line"></i>
+        <span>Blog</span>
+    </a>
+    <a href="/projects" class="navLink" data-page="projects">
+        <i class="ri-code-box-line"></i>
+        <span>Projects</span>
+    </a>
+    <a href="/newsletter" class="navLink" data-page="newsletter">
+        <i class="ri-mail-line"></i>
+        <span>Newsletter</span>
+    </a>
+    <a href="/contact" class="navLink" data-page="contact">
+        <i class="ri-contacts-line"></i>
+        <span>Contact</span>
+    </a>
 </nav>
 
 <script>
     const floatingNav = document.getElementById('floatingNav');
-    const whatCanIDoSection = document.querySelector('.two-col');
-
     let isVisible = false;
+    const currentPath = window.location.pathname;
+    const isHomePage = currentPath === '/';
+    const isMobile = () => window.innerWidth <= 768;
+
+    // Set position based on page and screen size
+    function updatePosition() {
+        if (!floatingNav) return;
+
+        if (isMobile()) {
+            // On mobile, always remove topPosition (always at bottom)
+            floatingNav.classList.remove('topPosition');
+        } else if (!isHomePage) {
+            // On desktop, non-home pages get topPosition
+            floatingNav.classList.add('topPosition');
+        } else {
+            // On desktop home page, remove topPosition (bottom)
+            floatingNav.classList.remove('topPosition');
+        }
+    }
 
     function checkScroll() {
-        if (!whatCanIDoSection || !floatingNav) return;
+        if (!floatingNav) return;
 
-        const sectionTop = whatCanIDoSection.getBoundingClientRect().top;
+        const scrollY = window.scrollY || window.pageYOffset;
         const windowHeight = window.innerHeight;
+        let shouldShow = false;
 
-        // Show nav when "What Can I Do" section is in viewport
-        const shouldShow = sectionTop < windowHeight * 0.8;
+        if (isMobile()) {
+            if (isHomePage) {
+                // Mobile home page: Hide tab bar for the first section, show after scrolling past it
+                // Show after scrolling down about one viewport height (to get past the first section)
+                shouldShow = scrollY > windowHeight * 0.8;
+            } else {
+                // Mobile other pages: Always show the tab bar
+                shouldShow = true;
+            }
+        } else if (isHomePage) {
+            // Desktop home page: Only show when "What can I do" section is visible
+            const whatCanIDoSection = document.querySelector('.detail.two-col');
+
+            if (whatCanIDoSection) {
+                const rect = whatCanIDoSection.getBoundingClientRect();
+
+                // Check if the section is in the viewport
+                // Show when the section starts entering from the bottom or is visible
+                shouldShow = rect.top < windowHeight && rect.bottom > 0;
+            }
+        } else {
+            // Desktop other pages: Show immediately (always visible at top)
+            shouldShow = true;
+        }
 
         if (shouldShow && !isVisible) {
             floatingNav.classList.add('visible');
@@ -136,17 +300,27 @@
         }
     }
 
-    // Highlight active link based on current page
-    function setActiveLink() {
-        const currentPath = window.location.pathname;
-        const links = floatingNav?.querySelectorAll('.navLink');
+    // Hide current page link and show others
+    function updateVisibleLinks() {
+        if (!floatingNav) return;
 
-        links?.forEach(link => {
+        const links = floatingNav.querySelectorAll('.navLink');
+
+        links.forEach(link => {
             const href = link.getAttribute('href');
-            if (currentPath === href || (currentPath === '/' && href === '/')) {
-                link.classList.add('active');
+            const linkElement = link as HTMLElement;
+
+            // Check if this link matches the current page
+            const isCurrentPage =
+                (currentPath === '/' && href === '/') ||
+                (currentPath !== '/' && href !== '/' && currentPath.startsWith(href));
+
+            if (isCurrentPage) {
+                // Hide the current page link
+                linkElement.style.display = 'none';
             } else {
-                link.classList.remove('active');
+                // Show other links
+                linkElement.style.display = '';
             }
         });
     }
@@ -163,7 +337,18 @@
         }
     });
 
-    // Initial check
+    // Handle window resize
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            updatePosition();
+            checkScroll();
+        }, 150);
+    });
+
+    // Initial setup
+    updatePosition();
     checkScroll();
-    setActiveLink();
+    updateVisibleLinks();
 </script>

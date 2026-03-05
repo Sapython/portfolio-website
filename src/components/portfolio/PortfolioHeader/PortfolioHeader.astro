@@ -207,7 +207,6 @@ section.headerContainer {
                         limitX:80,
                         limitY:0.1
                 });
-                console.log("parallaxInstance", parallaxInstance);
         }
         const lenis = new Lenis();
         function raf(time: any) {
@@ -217,11 +216,6 @@ section.headerContainer {
         requestAnimationFrame(raf);
 
         gsap.registerPlugin(ScrollTrigger);
-        // // console.log("Registered ScrollTrigger plugin",ScrollTrigger);
-        // //rotate and move elements with a class of "box" ("x" is a shortcut for a translateX() transform) over the course of 1 second.
-        // gsap.to(".gsapImage", { rotation: 27, x: 100, duration: 1 });
-        // console.log("gsap",gsap);
-        console.log("Hey from astro");
         let fadeOutPatternColors = [
                 "radial-gradient(#1A1E1D,#1A1E1D)",
                 "radial-gradient(#242727ff,#1A1E1D)",
@@ -307,10 +301,10 @@ section.headerContainer {
 <section class="headerContainer">
         <div id="overlay"></div>
         <div id="scene">
-                <Image src={subtractedImage} sizes={screenSizes} widths={imageWidths} data-depth="0.1" class="backgroundImage" alt="A dark greyish sky" />
+                <Image src={subtractedImage} sizes={screenSizes} widths={imageWidths} width={1920} height={1281} data-depth="0.1" class="backgroundImage" alt="A dark greyish sky" />
         </div>
         <div class="portfolioContainer">
-                <Image src={fullImage} sizes={screenSizes} widths={imageWidths} class="portfolioImage" alt="Mount Fuji" />
+                <Image src={fullImage} sizes={screenSizes} widths={imageWidths} width={1920} height={1281} class="portfolioImage" alt="Mount Fuji" />
                 <span></span>
         </div>
         <div class="contentContainer">

@@ -7,3 +7,10 @@ body{
     margin: 0;
     background: var(--background-color);
 }
+
+// Mobile tab bar spacing
+@media screen and (max-width: 768px) {
+    body {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom));
+    }
+}

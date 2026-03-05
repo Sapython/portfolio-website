@@ -47,14 +47,9 @@ const benefits = [
         min-height: 100vh;
         padding-inline: 120px;
         padding-block: 60px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
 
         .pageHeader {
-            text-align: center;
             margin-bottom: 60px;
-            max-width: 700px;
 
             h1 {
                 font-family: 'RustyCage';
@@ -73,15 +68,33 @@ const benefits = [
             }
         }
 
+        .contentWrapper {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 60px;
+            max-width: 1400px;
+            align-items: start;
+
+            .contentSection {
+                order: 1;
+            }
+
+            .subscriptionCard {
+                order: 2;
+            }
+        }
+
         .subscriptionCard {
             background: $contrast;
             box-shadow: inset 0 3px 10px #47372D, 0 30px 60px rgba(#000000, 40%);
             border-radius: 50px 10px 50px 10px;
-            padding: 35px;
-            max-width: 500px;
+            padding: 30px;
             width: 100%;
-            margin-bottom: 70px;
-            position: relative;
+            max-width: 380px;
+            box-sizing: border-box;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
 
             &::before {
                 content: '';
@@ -144,6 +157,8 @@ const benefits = [
                         padding: 12px 16px;
                         color: #fff;
                         font-size: 14px;
+                        width: 100%;
+                        box-sizing: border-box;
                         transition: all 0.3s ease;
 
                         &::placeholder {
@@ -202,9 +217,10 @@ const benefits = [
         }
 
         .contentSection {
-            max-width: 1000px;
             width: 100%;
-            margin-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
 
             h2 {
                 font-family: 'CascadiyaCode';
@@ -212,20 +228,22 @@ const benefits = [
                 font-size: 28px;
                 font-weight: 700;
                 margin: 0 0 30px 0;
-                text-align: center;
+            }
+
+            .section {
+                margin-bottom: 0;
             }
 
             .topicsGrid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 25px;
-                margin-bottom: 50px;
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+                gap: 20px;
 
                 .topicCard {
                     background: $contrast;
                     box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 35%);
                     border-radius: 25px 10px 25px 10px;
-                    padding: 28px;
+                    padding: 24px;
                     transition: all 0.3s ease;
 
                     &:hover {
@@ -255,7 +273,7 @@ const benefits = [
                 background: $contrast;
                 box-shadow: inset 0 3px 10px #47372D, 0 20px 40px rgba(#000000, 35%);
                 border-radius: 25px 10px 25px 10px;
-                padding: 40px;
+                padding: 30px;
                 list-style: none;
                 margin: 0;
 
@@ -288,6 +306,28 @@ const benefits = [
             padding-inline: 80px;
         }
 
+        @media screen and (max-width: 1200px) {
+            .contentWrapper {
+                grid-template-columns: 1fr;
+                gap: 40px;
+
+                .contentSection {
+                    order: 2;
+                }
+
+                .subscriptionCard {
+                    order: 1;
+                }
+            }
+
+            .subscriptionCard {
+                position: relative;
+                top: 0;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+        }
+
         @media screen and (max-width: 850px) {
             padding-inline: 80px;
             padding-block: 40px;
@@ -304,18 +344,24 @@ const benefits = [
                 }
             }
 
+            .contentWrapper {
+                gap: 40px;
+            }
+
             .subscriptionCard {
                 padding: 30px;
-                margin-bottom: 50px;
             }
 
             .contentSection {
+                gap: 40px;
+
                 h2 {
                     font-size: 24px;
                 }
 
                 .topicsGrid {
-                    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+                    gap: 18px;
                 }
             }
         }
@@ -323,8 +369,14 @@ const benefits = [
         @media screen and (max-width: 600px) {
             padding-inline: 40px;
 
+            .subscriptionCard {
+                max-width: 100%;
+                padding: 25px;
+            }
+
             .contentSection .topicsGrid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+                gap: 15px;
             }
         }
 
@@ -344,9 +396,14 @@ const benefits = [
                 }
             }
 
+            .contentWrapper {
+                gap: 30px;
+            }
+
             .subscriptionCard {
                 padding: 25px 20px;
-                margin-bottom: 40px;
+                max-width: 100%;
+                border-radius: 30px 10px 30px 10px;
 
                 h2 {
                     font-size: 18px;
@@ -361,18 +418,36 @@ const benefits = [
 
                     .inputGroup {
                         gap: 6px;
+
+                        input {
+                            padding: 10px 14px;
+                            font-size: 13px;
+                        }
                     }
 
                     .subscribeButton {
                         padding: 10px 18px;
                         font-size: 13px;
+                        box-sizing: border-box;
+                        width: 100%;
                     }
+                }
+
+                .privacy {
+                    font-size: 11px;
                 }
             }
 
             .contentSection {
+                gap: 30px;
+
                 h2 {
                     font-size: 22px;
+                    margin-bottom: 20px;
+                }
+
+                .topicsGrid {
+                    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
                 }
 
                 .benefitsList {
@@ -380,6 +455,37 @@ const benefits = [
 
                     li {
                         font-size: 13px;
+                    }
+                }
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            padding-inline: 15px;
+
+            .subscriptionCard {
+                padding: 20px 15px;
+                border-radius: 25px 8px 25px 8px;
+
+                h2 {
+                    font-size: 16px;
+                }
+
+                .form {
+                    .inputGroup {
+                        input {
+                            padding: 9px 12px;
+                            font-size: 12px;
+                        }
+
+                        label {
+                            font-size: 12px;
+                        }
+                    }
+
+                    .subscribeButton {
+                        padding: 9px 16px;
+                        font-size: 12px;
                     }
                 }
             }
@@ -394,57 +500,63 @@ const benefits = [
             <p>Join me on a journey through software engineering, full-stack development, and everything in between. Get weekly insights delivered straight to your inbox.</p>
         </div>
 
-        <div class="subscriptionCard">
-            <h2>Subscribe Now</h2>
-            <p class="subtitle">Get weekly insights from the trenches of production engineering</p>
-            <form class="form" action="#" method="POST">
-                <div class="inputGroup">
-                    <label for="name">Name</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Your name"
-                        required
-                    />
-                </div>
-                <div class="inputGroup">
-                    <label for="email">Email Address</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="you@example.com"
-                        required
-                    />
-                </div>
-                <button type="submit" class="subscribeButton">
-                    Subscribe to Newsletter
-                </button>
-            </form>
-            <p class="privacy">
-                Your privacy matters. I'll never share your email or spam you.
-                Unsubscribe anytime with one click.
-            </p>
-        </div>
-
-        <div class="contentSection">
-            <h2>What You'll Learn</h2>
-            <div class="topicsGrid">
-                {topics.map(topic => (
-                    <div class="topicCard">
-                        <h3>{topic.title}</h3>
-                        <p>{topic.description}</p>
+        <div class="contentWrapper">
+            <div class="contentSection">
+                <div class="section">
+                    <h2>What You'll Learn</h2>
+                    <div class="topicsGrid">
+                        {topics.map(topic => (
+                            <div class="topicCard">
+                                <h3>{topic.title}</h3>
+                                <p>{topic.description}</p>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
+
+                <div class="section">
+                    <h2>Why Subscribe?</h2>
+                    <ul class="benefitsList">
+                        {benefits.map(benefit => (
+                            <li>{benefit}</li>
+                        ))}
+                    </ul>
+                </div>
             </div>
 
-            <h2>Why Subscribe?</h2>
-            <ul class="benefitsList">
-                {benefits.map(benefit => (
-                    <li>{benefit}</li>
-                ))}
-            </ul>
+            <div class="subscriptionCard">
+                <h2>Subscribe Now</h2>
+                <p class="subtitle">Get weekly insights from the trenches of production engineering</p>
+                <form class="form" action="#" method="POST">
+                    <div class="inputGroup">
+                        <label for="name">Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Your name"
+                            required
+                        />
+                    </div>
+                    <div class="inputGroup">
+                        <label for="email">Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            required
+                        />
+                    </div>
+                    <button type="submit" class="subscribeButton">
+                        Subscribe to Newsletter
+                    </button>
+                </form>
+                <p class="privacy">
+                    Your privacy matters. I'll never share your email or spam you.
+                    Unsubscribe anytime with one click.
+                </p>
+            </div>
         </div>
     </div>
 </Layout>
@@ -462,7 +574,6 @@ const benefits = [
             const email = formData.get('email');
 
             // TODO: Replace with actual newsletter subscription logic
-            console.log('Newsletter subscription:', { name, email });
 
             // Show success message (you can replace this with a nicer notification)
             alert('Thanks for subscribing! Check your email for confirmation.');

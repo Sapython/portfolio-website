@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import Layout from './Layout.astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
 type Props = CollectionEntry<'posts'>['data'] & {
     slug?: string;
@@ -125,6 +126,7 @@ const tagData = await Promise.all(
 
             .mainContent {
                 max-width: 750px;
+                width: 100%;
                 margin: 0 auto;
 
                 .description {
@@ -141,7 +143,8 @@ const tagData = await Promise.all(
                 }
 
                 .prose {
-
+                    overflow-wrap: break-word;
+                    word-wrap: break-word;
                 }
 
                 .shareSection {
@@ -333,14 +336,22 @@ const tagData = await Promise.all(
             .contentWrapper {
                 grid-template-columns: 1fr;
                 gap: 40px;
+                padding: 60px 80px;
+
+                .mainContent {
+                    max-width: 100%;
+                }
 
                 .sidebar {
                     position: relative;
                     top: 0;
                     order: -1;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 20px;
 
                     .sidebarCard {
-                        margin-bottom: 20px;
+                        margin-bottom: 0;
                     }
                 }
             }
@@ -361,6 +372,10 @@ const tagData = await Promise.all(
 
             .contentWrapper {
                 padding: 40px 80px;
+
+                .sidebar {
+                    grid-template-columns: 1fr;
+                }
             }
         }
 
@@ -370,15 +385,36 @@ const tagData = await Promise.all(
 
                 .heroOverlay {
                     padding: 20px 40px;
+
+                    h1 {
+                        font-size: 32px;
+                    }
+
+                    .breadcrumb {
+                        font-size: 12px;
+                    }
                 }
             }
 
             .contentWrapper {
                 padding: 30px 40px;
 
-                .mainContent .description {
-                    padding: 20px;
-                    font-size: 16px;
+                .mainContent {
+                    .description {
+                        padding: 20px;
+                        font-size: 16px;
+                    }
+
+                    .shareSection {
+                        .shareButtons {
+                            flex-direction: column;
+
+                            a {
+                                width: 100%;
+                                justify-content: center;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -502,12 +538,14 @@ const tagData = await Promise.all(
             overflow-x: auto;
             margin: 30px 0;
             box-shadow: inset 0 3px 10px #47372D;
+            max-width: 100%;
 
             code {
                 background: none;
                 padding: 0;
                 color: #d0d0d0;
                 font-size: 14px;
+                white-space: pre;
             }
         }
 
@@ -527,6 +565,7 @@ const tagData = await Promise.all(
 
         table {
             width: 100%;
+            min-width: 100%;
             border-collapse: collapse;
             margin: 30px 0;
             font-size: 15px;
@@ -548,6 +587,16 @@ const tagData = await Promise.all(
             }
         }
 
+        // Wrapper for table overflow on mobile
+        .prose {
+            > table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+            }
+        }
+
         strong, b {
             font-weight: 700;
             color: lighten(#d0d0d0, 10%);
@@ -559,9 +608,31 @@ const tagData = await Promise.all(
     }
 
     /* Mobile responsive styles for prose */
-    @media screen and (max-width: 500px) {
+    @media screen and (max-width: 600px) {
         .prose {
             font-size: 15px;
+
+            h1 { font-size: 28px; }
+            h2 { font-size: 24px; }
+            h3 { font-size: 20px; }
+            h4 { font-size: 18px; }
+            h5 { font-size: 16px; }
+            h6 { font-size: 15px; }
+
+            ul, ol {
+                padding-left: 20px;
+            }
+
+            img {
+                margin: 20px 0;
+                border-radius: 8px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .prose {
+            font-size: 14px;
 
             h1 { font-size: 26px; }
             h2 { font-size: 22px; }
@@ -572,19 +643,30 @@ const tagData = await Promise.all(
 
             pre {
                 padding: 15px;
-                font-size: 13px;
+                margin: 20px -10px;
+                border-radius: 8px;
+
+                code {
+                    font-size: 12px;
+                }
             }
 
             code {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 2px 4px;
             }
 
             table {
-                font-size: 13px;
+                font-size: 12px;
 
                 th, td {
-                    padding: 8px;
+                    padding: 8px 6px;
                 }
+            }
+
+            blockquote {
+                padding-left: 15px;
+                margin: 20px 0;
             }
         }
     }
@@ -594,7 +676,15 @@ const tagData = await Promise.all(
     <div class="blogPostPage">
         <div class="heroSection">
             {heroImage && (
-                <img src={heroImage} alt={title} class="heroImage" />
+                <Image
+                    src={heroImage}
+                    alt={title}
+                    class="heroImage"
+                    width={1200}
+                    height={600}
+                    loading="eager"
+                    decoding="async"
+                />
             )}
             <div class="heroOverlay">
                 <div class="breadcrumb">

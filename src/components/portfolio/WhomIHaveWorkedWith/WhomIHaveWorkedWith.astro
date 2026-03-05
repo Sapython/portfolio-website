@@ -3,18 +3,132 @@ import CompanyCard from "./CompanyCard.astro";
 import "../portfolio.scss"
 import swayambhuImage from "../../../assets/images/swayambhu.png";
 import shreevaImage from "../../../assets/images/shreeva.png";
+import govindamImage from "../../../assets/images/govindam.png";
+import shiphouseImage from "../../../assets/images/shiphouse.png";
+
+const experiences = [
+    {
+        title: "Shiphouse Ecommerce",
+        image: shiphouseImage,
+        startYear: "2025",
+        endYear: "2026",
+        position: "Senior Full Stack Developer",
+        description: "Led the development of scalable e-commerce platform architecture, implementing real-time inventory management and payment processing systems.",
+        highlights: ["Microservices Architecture", "Payment Integration", "Real-time Systems"]
+    },
+    {
+        title: "Govindam",
+        image: govindamImage,
+        startYear: "2024",
+        endYear: "2025",
+        position: "Full Stack Developer",
+        description: "Developed and maintained web applications with focus on user experience and performance optimization.",
+        highlights: ["Web Development", "UI/UX Implementation", "Performance Optimization"]
+    },
+    {
+        title: "Shreeva Soft-Tech",
+        image: shreevaImage,
+        startYear: "2022",
+        endYear: "2023",
+        position: "Software Developer",
+        description: "Built custom software solutions for clients, focusing on backend development and API design.",
+        highlights: ["API Development", "Backend Systems", "Client Solutions"]
+    },
+    {
+        title: "Swayambhu Innovations",
+        image: swayambhuImage,
+        startYear: "2020",
+        endYear: "2022",
+        position: "Junior Developer",
+        description: "Started my professional journey developing innovative solutions and learning modern web technologies.",
+        highlights: ["Web Technologies", "Innovation", "Learning & Growth"]
+    }
+];
 ---
 
-<section class="detail row innerPadding">
-    <div class="content">
+<style lang="scss">
+    .work-experience-section {
+        background: var(--background-color);
+        padding: 80px 120px;
+
+        .section-header {
+            max-width: 800px;
+            margin-bottom: 60px;
+
+            h2 {
+                font-family: 'RustyCage';
+                font-weight: 500;
+                font-size: 80px;
+                margin-bottom: 20px;
+                color: var(--primary-color);
+            }
+
+            p {
+                font-family: 'CascadiyaCode';
+                color: var(--primary-color);
+                font-size: 20px;
+                opacity: 0.8;
+                line-height: 1.6;
+            }
+        }
+
+        .experience-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1400px;
+            align-items: stretch;
+        }
+
+        @media screen and (max-width: 1600px) {
+            padding: 60px 80px;
+        }
+
+        @media screen and (max-width: 1200px) {
+            .experience-grid {
+                grid-template-columns: 1fr;
+                max-width: 700px;
+            }
+        }
+
+        @media screen and (max-width: 850px) {
+            padding: 50px 40px;
+
+            .section-header h2 {
+                font-size: 60px;
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            padding: 40px 20px;
+
+            .section-header {
+                margin-bottom: 40px;
+
+                h2 {
+                    font-size: 48px;
+                }
+
+                p {
+                    font-size: 16px;
+                }
+            }
+
+            .experience-grid {
+                gap: 20px;
+            }
+        }
+    }
+</style>
+
+<section class="work-experience-section">
+    <div class="section-header">
         <h2>Whom i have worked with</h2>
         <p>My professional journey across innovative companies, from payment solutions to e-commerce platforms.</p>
-        <br>
     </div>
-    <div class="companies">
-        <CompanyCard title="Shiphouse Ecommerce" startYear="2025" endYear="2026"></CompanyCard>
-        <CompanyCard title="Govindam" flipped={true} startYear="2024" endYear="2025"></CompanyCard>
-        <CompanyCard title="Shreeva Soft-Tech" image={shreevaImage} startYear="2022" endYear="2023"></CompanyCard>
-        <CompanyCard title="Swayambhu Innovations" flipped={true} image={swayambhuImage} startYear="2020" endYear="2022"></CompanyCard>
+    <div class="experience-grid">
+        {experiences.map(exp => (
+            <CompanyCard {...exp} />
+        ))}
     </div>
 </section>

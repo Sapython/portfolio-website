@@ -1,79 +1,211 @@
 ---
 import { Image } from "astro:assets";
-const { image, startYear, endYear, title, flipped } = Astro.props;
+const { image, startYear, endYear, title, position, description, highlights } = Astro.props;
 ---
 <style lang="scss">
-    company-card{
-        background-image:url('/company.svg');
-        background-repeat:no-repeat;
-        background-size: 130%;
-        background-position:center;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        padding:30px;
-        width:300px;
-        height:300px;
-        z-index: 2;
-        gap:13px;
-        filter: drop-shadow(0px 0px 10px rgba(0,0,0,0.45));
-        transition:.5s;
-        &:hover{
-            filter: drop-shadow(0px 0px 20px rgba(0,0,0,0.75));
+    .experience-card {
+        background: #161616;
+        box-shadow: inset 0px 3px 30px rgba(0,0,0,44%);
+        border: 1px solid rgba(var(--primary-color-rgb, 187, 122, 79), 0.3);
+        border-radius: 20px;
+        padding: 35px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 400px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg,
+                var(--primary-color) 0%,
+                transparent 100%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
-        &.flipped{
-            transform:rotateZ(180deg);
-            >*{
-                transform:rotateZ(-180deg);
+
+        &:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary-color);
+            background: #1a1a1a;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+
+            &::before {
+                opacity: 1;
+            }
+
+            .company-header .company-logo {
+                transform: scale(1.05);
             }
         }
-        >*{
-            margin: 0;
-            color:var(--primary-color);
-            font-family: 'CascadiyaCode';
-        }
-        img, .placeholder-icon{
-            margin-top: 40px;
-            width: 30%;
-        }
-        .placeholder-icon{
+
+        .company-header {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 24px;
+
+            .company-logo {
+                flex-shrink: 0;
+                width: 70px;
+                height: 70px;
+                border-radius: 14px;
+                background: rgba(var(--primary-color-rgb, 187, 122, 79), 0.08);
+                border: 1px solid rgba(var(--primary-color-rgb, 187, 122, 79), 0.2);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 12px;
+                transition: transform 0.3s ease;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+
+                .placeholder-icon {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+            .company-info {
+                flex: 1;
+
+                h3 {
+                    font-family: 'CascadiyaCode';
+                    font-size: 22px;
+                    font-weight: 600;
+                    color: var(--primary-color);
+                    margin: 0 0 6px 0;
+                    line-height: 1.3;
+                }
+
+                .duration {
+                    font-family: 'CascadiyaCode';
+                    font-size: 14px;
+                    color: var(--primary-color);
+                    opacity: 0.6;
+                    margin: 0;
+                    letter-spacing: 0.5px;
+                }
+            }
         }
-        p{
-            text-transform: capitalize;
+
+        .position-title {
+            font-family: 'CascadiyaCode';
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--primary-color);
+            opacity: 0.85;
+            margin: 0 0 16px 0;
+            line-height: 1.4;
         }
-        @media screen and (max-width: 500px){
-            width: 150px;
-            height: 150px;
-            img, .placeholder-icon{
-                width: 40%;
+
+        .description {
+            font-family: 'CascadiyaCode';
+            font-size: 15px;
+            color: var(--primary-color);
+            opacity: 0.7;
+            line-height: 1.7;
+            margin: 0 0 20px 0;
+            flex: 1;
+        }
+
+        .highlights {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+
+            .tag {
+                font-family: 'CascadiyaCode';
+                font-size: 12px;
+                color: var(--primary-color);
+                background: rgba(var(--primary-color-rgb, 187, 122, 79), 0.12);
+                border: 1px solid rgba(var(--primary-color-rgb, 187, 122, 79), 0.25);
+                padding: 6px 12px;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+
+                &:hover {
+                    background: rgba(var(--primary-color-rgb, 187, 122, 79), 0.18);
+                    border-color: var(--primary-color);
+                }
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            padding: 25px;
+
+            .company-header {
+                gap: 15px;
+                margin-bottom: 20px;
+
+                .company-logo {
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .company-info h3 {
+                    font-size: 19px;
+                }
+            }
+
+            .position-title {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+
+            .description {
+                font-size: 14px;
+                margin-bottom: 16px;
+            }
+
+            .highlights .tag {
+                font-size: 11px;
+                padding: 5px 10px;
             }
         }
     }
 </style>
-<script lang="ts">
-    if (!customElements.get('company-card')) {
-        class CompanyCard extends HTMLElement{
-            constructor(){
-                super();
-            }
-        }
 
-        customElements.define('company-card', CompanyCard);
-    }
-</script>
+<div class="experience-card">
+    <div class="company-header">
+        <div class="company-logo">
+            {image && <Image src={image} alt={title}></Image>}
+            {!image && <div class="placeholder-icon">
+                <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="46" height="46" rx="8" fill="#bb7a4f" opacity="0.2"/>
+                    <text x="23" y="30" text-anchor="middle" fill="#bb7a4f" font-size="18" font-family="CascadiyaCode">{title.substring(0, 2).toUpperCase()}</text>
+                </svg>
+            </div>}
+        </div>
+        <div class="company-info">
+            <h3>{title}</h3>
+            <p class="duration">{startYear} - {endYear}</p>
+        </div>
+    </div>
 
-<company-card class={flipped && 'flipped'}>
-    {image && <Image src={image} alt={title}></Image>}
-    {!image && <div class="placeholder-icon">
-        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="60" height="60" rx="10" fill="#bb7a4f" opacity="0.2"/>
-            <text x="30" y="38" text-anchor="middle" fill="#bb7a4f" font-size="24" font-family="CascadiyaCode">{title.substring(0, 2).toUpperCase()}</text>
-        </svg>
-    </div>}
-    <span>{startYear}-{endYear}</span>
-    <p>{title}</p>
-</company-card>
+    <p class="position-title">{position}</p>
+    <p class="description">{description}</p>
+
+    {highlights && highlights.length > 0 && (
+        <div class="highlights">
+            {highlights.map(highlight => (
+                <span class="tag">{highlight}</span>
+            ))}
+        </div>
+    )}
+</div>

@@ -48,7 +48,7 @@ const { projectName, description, techIcons, route, size = 'medium', position = 
             z-index: 0;
         }
 
-        // Position-based border radius
+        // Position-based border radius - Desktop (default: 50px)
         &.pos-top-left {
             border-radius: 50px 0 0 0;
         }
@@ -75,6 +75,60 @@ const { projectName, description, techIcons, route, size = 'medium', position = 
 
         &.pos-middle {
             border-radius: 0;
+        }
+
+        // Tablet/smaller desktop responsive border radius (1200-1600px: 40px)
+        @media screen and (max-width: 1600px) {
+            &.pos-top-left {
+                border-radius: 40px 0 0 0;
+            }
+
+            &.pos-top-right {
+                border-radius: 0 40px 0 0;
+            }
+
+            &.pos-bottom-left {
+                border-radius: 0 0 0 40px;
+            }
+
+            &.pos-bottom-right {
+                border-radius: 0 0 40px 0;
+            }
+
+            &.pos-middle-right {
+                border-radius: 0 8px 8px 0;
+            }
+
+            &.pos-middle-left {
+                border-radius: 8px 0 0 8px;
+            }
+        }
+
+        // Tablet responsive border radius (850-1200px: 35px)
+        @media screen and (max-width: 1200px) {
+            &.pos-top-left {
+                border-radius: 35px 0 0 0;
+            }
+
+            &.pos-top-right {
+                border-radius: 0 35px 0 0;
+            }
+
+            &.pos-bottom-left {
+                border-radius: 0 0 0 35px;
+            }
+
+            &.pos-bottom-right {
+                border-radius: 0 0 35px 0;
+            }
+
+            &.pos-middle-right {
+                border-radius: 0 7px 7px 0;
+            }
+
+            &.pos-middle-left {
+                border-radius: 7px 0 0 7px;
+            }
         }
 
         &:hover {
@@ -255,20 +309,22 @@ const { projectName, description, techIcons, route, size = 'medium', position = 
 
             // Reset all border radius for mobile stacking
             &.pos-top-left,
+            &.pos-top-right,
             &.pos-middle-right,
             &.pos-middle-left,
-            &.pos-middle {
+            &.pos-middle,
+            &.pos-bottom-left {
                 border-radius: 0;
             }
 
-            // Only keep top corners rounded on first card
+            // Only keep top corners rounded on first card (30px for mobile)
             &.pos-top-left {
-                border-radius: 50px 50px 0 0;
+                border-radius: 30px 30px 0 0;
             }
 
-            // Only keep bottom corners rounded on last card
+            // Only keep bottom corners rounded on last card (30px for mobile)
             &.pos-bottom-right {
-                border-radius: 0 0 50px 50px;
+                border-radius: 0 0 30px 30px;
             }
 
             &.size-hero {
@@ -315,6 +371,15 @@ const { projectName, description, techIcons, route, size = 'medium', position = 
             min-height: 250px;
             padding: 20px;
             gap: 18px;
+
+            // Smaller border radius for small mobile (25px)
+            &.pos-top-left {
+                border-radius: 25px 25px 0 0;
+            }
+
+            &.pos-bottom-right {
+                border-radius: 0 0 25px 25px;
+            }
 
             h3 {
                 font-size: 22px !important;
@@ -367,6 +432,17 @@ const { projectName, description, techIcons, route, size = 'medium', position = 
                 }
             }
 
+        }
+
+        // Extra small mobile (20px border radius for very small screens)
+        @media screen and (max-width: 400px) {
+            &.pos-top-left {
+                border-radius: 20px 20px 0 0;
+            }
+
+            &.pos-bottom-right {
+                border-radius: 0 0 20px 20px;
+            }
         }
     }
 </style>

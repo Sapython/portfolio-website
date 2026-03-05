@@ -131,6 +131,14 @@ section.detail{
         grid-template-columns: 3fr 1.5fr;
         .content{
             max-width: inherit;
+            line-height: 1.5rem;
+            p{
+                font-size: 16px;
+            }
+            br{
+                display: block;
+                margin-bottom: 7px;
+            }
         }
     }
     // responsive for smaller desktops/large tablets
